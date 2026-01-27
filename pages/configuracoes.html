@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações • StockFlow</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script>(function(){var ts=Date.now();var s=document.createElement('script');s.src='../assets/js/i18n.js?_='+ts;s.defer=true;document.head.appendChild(s);})();</script>
+</head>
+<body>
+
+    <aside>
+        <div class="logo" data-i18n="logo">📦 StockFlow</div>
+        <nav class="menu">
+            <a href="../index.html" data-i18n="menu.dashboard">Dashboard</a>
+            <a href="movimentacoes.html" data-i18n="menu.mov">Movimentações</a>
+            <a href="relatorios.html" data-i18n="menu.reports">Relatórios</a>
+            <a href="configuracoes.html" data-i18n="menu.settings">Configurações</a>
+        </nav>
+    </aside>
+
+    <main>
+        <header>
+            <div>
+                <h1 data-i18n="settings.title">Configurações</h1>
+                <span data-i18n="settings.subtitle">Ajustes do sistema</span>
+            </div>
+        </header>
+
+        <section class="content">
+            
+            <div class="panel">
+                <h2 data-i18n="settings.general">Configurações Gerais</h2>
+                <form id="configForm">
+                    <div>
+                        <label for="apiUrl" data-i18n="settings.apiUrl">URL da API</label>
+                        <input id="apiUrl" data-i18n-placeholder="settings.apiUrl.placeholder" placeholder="http://localhost:8080/api" required>
+                    </div>
+                    <div>
+                        <label for="idioma" data-i18n="settings.language">Idioma</label>
+                        <select id="idioma">
+                            <option value="pt-BR">Português (Brasil)</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                    <button type="submit" data-i18n="settings.save">Salvar</button>
+                </form>
+            </div>
+
+        </section>
+    </main>
+
+    <script>(function(){var ts=Date.now();var s=document.createElement('script');s.src='../assets/js/script-config.js?_='+ts;s.defer=true;document.body.appendChild(s);})();</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios • StockFlow</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script>(function(){var ts=Date.now();var s=document.createElement('script');s.src='../assets/js/i18n.js?_='+ts;s.defer=true;document.head.appendChild(s);})();</script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <aside>
+        <div class="logo" data-i18n="logo">📦 StockFlow</div>
+        <nav class="menu">
+            <a href="../index.html" data-i18n="menu.dashboard">Dashboard</a>
+            <a href="movimentacoes.html" data-i18n="menu.mov">Movimentações</a>
+            <a href="relatorios.html" data-i18n="menu.reports">Relatórios</a>
+            <a href="configuracoes.html" data-i18n="menu.settings">Configurações</a>
+        </nav>
+    </aside>
+
+    <main>
+        <header>
+            <div>
+                <h1 data-i18n="reports.title">Relatórios</h1>
+                <span data-i18n="reports.subtitle">Análises e gráficos do estoque</span>
+            </div>
+        </header>
+
+        <section class="content">
+            
+            <div class="panel">
+                <h2 data-i18n="reports.stock">Estoque Atual</h2>
+                <canvas id="estoqueChart"></canvas>
+            </div>
+
+            <div class="panel">
+                <h2 data-i18n="reports.movByType">Movimentações por Tipo</h2>
+                <canvas id="movChart"></canvas>
+            </div>
+
+        </section>
+    </main>
+
+    <script>(function(){var ts=Date.now();var s=document.createElement('script');s.src='../assets/js/script-rel.js?_='+ts;s.defer=true;document.body.appendChild(s);})();</script>
+</body>
+</html>

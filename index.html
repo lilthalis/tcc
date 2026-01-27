@@ -4,34 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StockFlow • Gestão Profissional</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script>(function(){var ts=Date.now();var s=document.createElement('script');s.src='assets/js/i18n.js?_='+ts;s.defer=true;document.head.appendChild(s);})();</script>
 </head>
 <body>
 
     <aside>
-        <div class="logo">📦 StockFlow</div>
+        <div class="logo" data-i18n="logo">📦 StockFlow</div>
         <nav class="menu">
-            <div>Dashboard</div>
-            <div>Movimentações</div>
-            <div>Relatórios</div>
-            <div>Configurações</div>
+            <a href="index.html" data-i18n="menu.dashboard">Dashboard</a>
+            <a href="pages/movimentacoes.html" data-i18n="menu.mov">Movimentações</a>
+            <a href="pages/relatorios.html" data-i18n="menu.reports">Relatórios</a>
+            <a href="pages/configuracoes.html" data-i18n="menu.settings">Configurações</a>
         </nav>
     </aside>
 
     <main>
         <header>
             <div>
-                <h1>Dashboard</h1>
-                <span>Gestão profissional de estoque</span>
+                <h1 data-i18n="page.dashboard.title">Dashboard</h1>
+                <span data-i18n="page.dashboard.subtitle">Gestão profissional de estoque</span>
             </div>
         </header>
 
         <section class="cards">
             <div class="card-info">
-                <h3>Produtos Cadastrados</h3>
+                <h3 data-i18n="card.products">Produtos Cadastrados</h3>
                 <p id="totalProdutos">0</p>
             </div>
             <div class="card-info">
-                <h3>Total em Estoque</h3>
+                <h3 data-i18n="card.total">Total em Estoque</h3>
                 <p id="totalQtd">0</p>
             </div>
         </section>
@@ -39,47 +44,47 @@
         <section class="content">
             
             <div class="panel">
-                <h2>Nova Movimentação</h2>
+                <h2 data-i18n="movements.title">Nova Movimentação</h2>
                 <form id="form">
                     <div>
-                        <label>Produto</label>
-                        <input id="produto" placeholder="Ex: Teclado Mecânico" required>
+                        <label data-i18n="form.product">Produto</label>
+                        <input id="produto" data-i18n-placeholder="form.product.placeholder" placeholder="Ex: Teclado Mecânico" required>
                     </div>
                     <div>
-                        <label>Quantidade</label>
+                        <label data-i18n="form.quantity">Quantidade</label>
                         <input type="number" id="quantidade" min="1" required>
                     </div>
                     <div>
-                        <label>Tipo</label>
+                        <label data-i18n="form.type">Tipo</label>
                         <select id="tipo">
-                            <option value="entrada">Entrada</option>
-                            <option value="saida">Saída</option>
+                            <option value="entrada" data-i18n="tipo.entrada">Entrada</option>
+                            <option value="saida" data-i18n="tipo.saida">Saída</option>
                         </select>
                     </div>
-                    <button type="submit">Registrar Movimentação</button>
+                    <button type="submit" data-i18n="form.submit">Registrar Movimentação</button>
                 </form>
             </div>
 
             <div class="panel">
-                <h2>Estoque Atual</h2>
+                <h2 data-i18n="dashboard.stock">Estoque Atual</h2>
                 <table>
                     <thead>
                         <tr>
-                            <th>Produto</th>
-                            <th>Quantidade</th>
+                            <th data-i18n="table.product">Produto</th>
+                            <th data-i18n="table.quantity">Quantidade</th>
                         </tr>
                     </thead>
                     <tbody id="estoque">
                         </tbody>
                 </table>
 
-                <h2 style="margin-top:25px">Histórico</h2>
+                <h2 style="margin-top:25px" data-i18n="dashboard.history">Histórico</h2>
                 <table>
                     <thead>
                         <tr>
-                            <th>Produto</th>
-                            <th>Qtd</th>
-                            <th>Tipo</th>
+                            <th data-i18n="table.product">Produto</th>
+                            <th data-i18n="table.qtd">Qtd</th>
+                            <th data-i18n="table.type">Tipo</th>
                         </tr>
                     </thead>
                     <tbody id="historico">
@@ -90,5 +95,6 @@
         </section>
     </main>
 
+    <script>(function(){var ts=Date.now();var s=document.createElement('script');s.src='assets/js/script.js?_='+ts;s.defer=true;document.body.appendChild(s);})();</script>
 </body>
 </html> 

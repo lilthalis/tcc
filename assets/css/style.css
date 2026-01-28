@@ -39,6 +39,8 @@ aside {
     height: 100vh;
     align-self: start;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .logo {
@@ -81,12 +83,46 @@ aside {
     transform: translateX(5px);
 }
 
+.language-switch {
+    margin-top: auto;
+}
+
+.language-switch button {
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.language-switch button:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+}
+
 /* =========================================
    3. ÁREA PRINCIPAL E HEADER
    ========================================= */
 main {
     padding: 30px;
     overflow-y: auto;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0.8; }
+    to { opacity: 1; }
+}
+
+html.is-navigating main {
+    opacity: 0.8;
+    pointer-events: none;
 }
 
 header {

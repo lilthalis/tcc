@@ -1,4 +1,4 @@
-// Simple i18n helper
+// Auxiliar i18n simples
 (function(){
     const translations = {
         'pt-BR': {
@@ -6,7 +6,6 @@
             'menu.dashboard': 'Dashboard',
             'menu.mov': 'Movimentações',
             'menu.reports': 'Relatórios',
-            'menu.settings': 'Configurações',
 
             'page.dashboard.title': 'Dashboard',
             'page.dashboard.subtitle': 'Gestão profissional de estoque',
@@ -28,6 +27,8 @@
             'filter.start': 'Data Início',
             'filter.end': 'Data Fim',
             'filter.apply': 'Aplicar Filtros',
+            'filter.title': 'Filtros',
+            'filter.all': 'Todos',
 
             'tipo.entrada': 'Entrada',
             'tipo.saida': 'Saída',
@@ -44,21 +45,19 @@
             'reports.stock': 'Estoque Atual',
             'reports.movByType': 'Movimentações por Tipo',
 
+            'menu.settings': 'Configurações',
             'settings.title': 'Configurações',
             'settings.subtitle': 'Ajustes do sistema',
             'settings.general': 'Configurações Gerais',
-            'settings.apiUrl': 'URL da API',
-            'settings.apiUrl.placeholder': 'http://localhost:8080/api',
             'settings.language': 'Idioma',
             'settings.save': 'Salvar',
-            'settings.saved': 'Configurações salvas! Reinicie a aplicação para aplicar.'
+            'settings.saved': 'Configurações salvas!'
         },
         'en': {
             'logo': '📦 StockFlow',
             'menu.dashboard': 'Dashboard',
             'menu.mov': 'Movements',
             'menu.reports': 'Reports',
-            'menu.settings': 'Settings',
 
             'page.dashboard.title': 'Dashboard',
             'page.dashboard.subtitle': 'Professional stock management',
@@ -80,6 +79,8 @@
             'filter.start': 'Start Date',
             'filter.end': 'End Date',
             'filter.apply': 'Apply Filters',
+            'filter.title': 'Filters',
+            'filter.all': 'All',
 
             'tipo.entrada': 'Entry',
             'tipo.saida': 'Exit',
@@ -96,14 +97,13 @@
             'reports.stock': 'Current Stock',
             'reports.movByType': 'Movements by Type',
 
+            'menu.settings': 'Settings',
             'settings.title': 'Settings',
             'settings.subtitle': 'System adjustments',
             'settings.general': 'General Settings',
-            'settings.apiUrl': 'API URL',
-            'settings.apiUrl.placeholder': 'http://localhost:8080/api',
             'settings.language': 'Language',
             'settings.save': 'Save',
-            'settings.saved': 'Settings saved! Restart the application to apply.'
+            'settings.saved': 'Settings saved!'
         }
     };
 
@@ -114,12 +114,12 @@
     function t(key){
         const lang = getLang();
         if (translations[lang] && translations[lang][key]) return translations[lang][key];
-        // fallback to key if missing
+        // fallback para chave se tradução estiver faltando
         return key;
     }
 
     function applyTranslations(root=document){
-        // elements with data-i18n -> set textContent
+        // elementos com data-i18n -> definir textContent
         root.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             el.textContent = t(key);
@@ -129,7 +129,7 @@
             const key = el.getAttribute('data-i18n-placeholder');
             el.setAttribute('placeholder', t(key));
         });
-        // options with data-i18n
+        // opções com data-i18n
         root.querySelectorAll('option[data-i18n]').forEach(opt => {
             const key = opt.getAttribute('data-i18n');
             opt.textContent = t(key);
@@ -138,23 +138,27 @@
 
     window.i18n = { t, applyTranslations, getLang };
 
-    // apply on DOMContentLoaded
-    document.addEventListener('DOMContentLoaded', () => {
+    function notifyReady() {
         applyTranslations();
-    });
+        window.dispatchEvent(new Event('i18n:ready'));
+    }
 
-    // Reapply when language changed in other tabs/windows
+    // Aplicar quando DOM estiver pronto
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notifyReady);
+    } else {
+        notifyReady();
+    }
+
+    // Reaplicar quando idioma muda em outras abas/janelas
     window.addEventListener('storage', (e) => {
         if (e.key === 'idioma') applyTranslations();
     });
 
-    // Reapply when tab regains focus or becomes visible (helps when cache is cleared)
+    // Reaplicar quando aba recupera foco ou fica visível (ajuda quando cache é limpo)
     window.addEventListener('focus', () => applyTranslations());
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') applyTranslations();
     });
-
-    // Notify other scripts that i18n is ready
-    window.dispatchEvent(new Event('i18n:ready'));
 
 })();

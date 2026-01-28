@@ -8,18 +8,23 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="../assets/css/style.css">
+    <script>(function(){var ts=Date.now();var s=document.createElement('script');s.src='../assets/js/router.js?_='+ts;s.defer=true;document.head.appendChild(s);})();</script>
     <script>(function(){var ts=Date.now();var s=document.createElement('script');s.src='../assets/js/i18n.js?_='+ts;s.defer=true;document.head.appendChild(s);})();</script>
+    <script src="../assets/js/script-language.js"></script>
 </head>
 <body>
 
     <aside>
         <div class="logo" data-i18n="logo">📦 StockFlow</div>
         <nav class="menu">
-            <a href="../index.html" data-i18n="menu.dashboard">Dashboard</a>
-            <a href="movimentacoes.html" data-i18n="menu.mov">Movimentações</a>
-            <a href="relatorios.html" data-i18n="menu.reports">Relatórios</a>
-            <a href="configuracoes.html" data-i18n="menu.settings">Configurações</a>
+            <a href="/" data-i18n="menu.dashboard">Dashboard</a>
+            <a href="/pages/movimentacoes.html" data-i18n="menu.mov">Movimentações</a>
+            <a href="/pages/relatorios.html" data-i18n="menu.reports">Relatórios</a>
+            <a href="/pages/configuracoes.html" data-i18n="menu.settings">Configurações</a>
         </nav>
+        <div class="language-switch">
+            <button id="languageBtn" title="Trocar idioma">🌐 PT</button>
+        </div>
     </aside>
 
     <main>
@@ -46,9 +51,9 @@
                     <div>
                         <label data-i18n="form.type">Tipo</label>
                         <select id="tipoFiltro">
-                            <option value="">Todos</option>
-                            <option value="entrada">Entrada</option>
-                            <option value="saida">Saída</option>
+                            <option value="" data-i18n="filter.all">Todos</option>
+                            <option value="entrada" data-i18n="tipo.entrada">Entrada</option>
+                            <option value="saida" data-i18n="tipo.saida">Saída</option>
                         </select>
                     </div>
                     <button type="submit" data-i18n="filter.apply">Aplicar Filtros</button>

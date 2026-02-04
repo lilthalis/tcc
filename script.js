@@ -286,7 +286,7 @@ function atualizarHistorico() {
   const containerPaginacao = document.getElementById("paginacaoHistorico");
 
   if (historico.length === 0) {
-    tabelaHistorico.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Sem histórico de movimentações</td></tr>';
+    tabelaHistorico.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999;">Sem histórico de movimentações</td></tr>';
     if (containerPaginacao) containerPaginacao.style.display = 'none';
     return;
   }
@@ -323,9 +323,6 @@ function atualizarHistorico() {
         <td>${mov.quantidade}</td>
         <td>${mov.pessoa}</td>
         <td style="font-size: 11px;">${mov.data} ${mov.hora}</td>
-        <td>
-          <button onclick="excluirMovimentacao(${mov.realIndex})" style="background:#ddd; color:#333; padding:4px 8px; font-size:10px; border-radius:4px;">Excluir</button>
-        </td>
       </tr>
     `;
   });

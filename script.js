@@ -1,52 +1,77 @@
 ﻿const entradaNome = document.getElementById('entradaNome');
 const entradaQtd = document.getElementById('entradaQtd');
+const entradaPessoa = document.getElementById('entradaPessoa');
 const saidaNome = document.getElementById('saidaNome');
 const saidaQtd = document.getElementById('saidaQtd');
 const saidaPessoa = document.getElementById('saidaPessoa');
+const retornoNome = document.getElementById('retornoNome');
+const retornoQtd = document.getElementById('retornoQtd');
+const retornoPessoa = document.getElementById('retornoPessoa');
 const qtdDisponivel = document.getElementById('qtdDisponivel');
 const pesquisa = document.getElementById('pesquisa');
 const tabelaEstoque = document.getElementById('tabelaEstoque');
 const tabelaHistorico = document.getElementById('tabelaHistorico');
 const msgEntrada = document.getElementById('msgEntrada');
 const msgSaida = document.getElementById('msgSaida');
+const msgRetorno = document.getElementById('msgRetorno');
 
 let estoque = JSON.parse(localStorage.getItem('estoque')) || {
   "Caneta Azul": 50,
-  "LÃ¡pis HB": 100,
-  "Borracha Branca": 45,
-  "Caderno UniversitÃ¡rio": 20,
-  "Papel A4 (Pacote)": 10,
-  "RÃ©gua 30cm": 15,
-  "Tesoura Escolar": 12,
-  "Cola BastÃ£o": 30,
-  "Grampeador": 8,
-  "Clips (Caixa)": 100,
-  "Pasta Suspensa": 40,
-  "Calculadora": 5,
-  "Estojo": 15,
-  "Marcador de Texto": 25,
-  "Apontador": 60
+  "Lápis HB": 100,
+  "Borracha Branca": 45
 };
-let historico = JSON.parse(localStorage.getItem('historico')) || [
-  { tipo: "Entrada", item: "Caneta Azul", quantidade: 10, pessoa: "Estoque Central", data: "04/02/2026", hora: "10:00:00" },
-  { tipo: "Entrada", item: "Papel A4 (Pacote)", quantidade: 5, pessoa: "Estoque Central", data: "04/02/2026", hora: "10:05:00" },
-  { tipo: "SaÃ­da", item: "LÃ¡pis HB", quantidade: 2, pessoa: "JoÃ£o Silva", data: "04/02/2026", hora: "14:30:00" },
-  { tipo: "SaÃ­da", item: "Borracha Branca", quantidade: 1, pessoa: "Maria Souza", data: "04/02/2026", hora: "15:00:00" },
-  { tipo: "Entrada", item: "RÃ©gua 30cm", quantidade: 15, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:10:00" },
-  { tipo: "Entrada", item: "Tesoura Escolar", quantidade: 12, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:15:00" },
-  { tipo: "Entrada", item: "Cola BastÃ£o", quantidade: 30, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:20:00" },
-  { tipo: "Entrada", item: "Grampeador", quantidade: 8, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:25:00" },
-  { tipo: "Entrada", item: "Clips (Caixa)", quantidade: 100, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:30:00" },
-  { tipo: "Entrada", item: "Pasta Suspensa", quantidade: 40, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:35:00" },
-  { tipo: "Entrada", item: "Calculadora", quantidade: 5, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:40:00" },
-  { tipo: "Entrada", item: "Estojo", quantidade: 15, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:45:00" },
-  { tipo: "Entrada", item: "Marcador de Texto", quantidade: 25, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:50:00" },
-  { tipo: "Entrada", item: "Apontador", quantidade: 60, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:55:00" }
-];
+
+let historico = JSON.parse(localStorage.getItem('historico')) || [];
+
+// Limpeza de dados antigos/corrompidos (sanitização)
+historico = historico.map(mov => {
+  if (mov.data && mov.data.includes('T') && mov.data.includes('Z')) {
+    const d = new Date(mov.data);
+    mov.data = d.toLocaleDateString('pt-BR');
+    mov.hora = d.toLocaleTimeString('pt-BR');
+  }
+  return {
+    tipo: mov.tipo || "Desconhecido",
+    item: mov.item || "Produto não identificado",
+    quantidade: mov.quantidade || 0,
+    pessoa: mov.pessoa || "Não informado",
+    data: mov.data || "Data indisponível",
+    hora: mov.hora || ""
+  };
+}).filter(mov => {
+  // Remove entradas completamente inválidas
+  const isInvalid = mov.item === "Produto não identificado" && mov.pessoa === "Não informado";
+  return !isInvalid;
+});
+localStorage.setItem('historico', JSON.stringify(historico));
 
 let paginaAtual = 1;
 let paginaEstoqueAtual = 1;
 const itensPorPagina = 5;
+
+// Lógica de Abas
+function openTab(evt, tabName) {
+  const tabContents = document.getElementsByClassName("tab-content");
+  for (let i = 0; i < tabContents.length; i++) {
+    tabContents[i].classList.remove("active");
+  }
+
+  const tabBtns = document.getElementsByClassName("tab-btn");
+  for (let i = 0; i < tabBtns.length; i++) {
+    tabBtns[i].classList.remove("active");
+  }
+
+  document.getElementById(tabName).classList.add("active");
+  evt.currentTarget.classList.add("active");
+
+  // Atualiza visualização conforme a aba
+  if (tabName === 'tab-estoque') {
+    atualizarTabela();
+  }
+  if (tabName === 'tab-historico') {
+    atualizarHistorico();
+  }
+}
 
 function salvarDados() {
   localStorage.setItem('estoque', JSON.stringify(estoque));
@@ -55,50 +80,52 @@ function salvarDados() {
 
 document.addEventListener('DOMContentLoaded', () => {
   atualizarTabela();
-  atualizarSaidaSelect();
+  atualizarSelects();
   atualizarHistorico();
 });
 
 function mostrarMensagem(elemento, texto, tipo) {
   elemento.textContent = texto;
   elemento.className = `msg-container msg-${tipo}`;
+  elemento.style.display = 'block';
   setTimeout(() => {
-    elemento.className = 'msg-container';
+    elemento.style.display = 'none';
     elemento.textContent = '';
   }, 3000);
 }
 
+// 1° ABA - ADICIONAR ITEM (ENTRADA)
 function adicionarItem() {
   const nome = entradaNome.value.trim();
   const qtd = Number(entradaQtd.value);
+  const pessoa = entradaPessoa.value.trim() || "Sistema";
 
   if (!nome || qtd <= 0) {
-    return mostrarMensagem(msgEntrada, "Preencha corretamente!", "error");
+    return mostrarMensagem(msgEntrada, "Preencha nome e quantidade corretamente!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
 
-  
   const agora = new Date();
   historico.push({
     tipo: "Entrada",
     item: nome,
     quantidade: qtd,
-    pessoa: "Entrada Manual",
+    pessoa: pessoa,
     data: agora.toLocaleDateString('pt-BR'),
     hora: agora.toLocaleTimeString('pt-BR')
   });
 
   salvarDados();
   atualizarTabela();
-  atualizarSaidaSelect();
-  atualizarQtdDisponivelSaida();
-  atualizarHistorico();
+  atualizarSelects();
   entradaNome.value = "";
   entradaQtd.value = "";
-  mostrarMensagem(msgEntrada, "Item adicionado!", "success");
+  entradaPessoa.value = "";
+  mostrarMensagem(msgEntrada, "Entrada registrada com sucesso!", "success");
 }
 
+// 2° ABA - REMOVER ITEM (SAÍDA)
 function removerItem() {
   const nome = saidaNome.value;
   const qtd = Number(saidaQtd.value);
@@ -109,16 +136,15 @@ function removerItem() {
   }
 
   if (!estoque[nome] || estoque[nome] < qtd) {
-    return mostrarMensagem(msgSaida, "Quantidade insuficiente!", "error");
+    return mostrarMensagem(msgSaida, "Quantidade insuficiente no estoque!", "error");
   }
 
   estoque[nome] -= qtd;
-  if (estoque[nome] === 0) delete estoque[nome];
+  // Não deletamos a chave para que o item continue aparecendo no "Retorno"
 
-  
   const agora = new Date();
   historico.push({
-    tipo: "SaÃ­da",
+    tipo: "Saída",
     item: nome,
     quantidade: qtd,
     pessoa: pessoa,
@@ -127,22 +153,55 @@ function removerItem() {
   });
 
   salvarDados();
-  mostrarMensagem(msgSaida, `Retirado por: ${pessoa}`, "success");
+  mostrarMensagem(msgSaida, "Saída registrada!", "success");
+  
   atualizarTabela();
-  atualizarSaidaSelect();
+  atualizarSelects();
   atualizarQtdDisponivelSaida();
-  atualizarHistorico();
-
+  
   saidaNome.value = "";
   saidaQtd.value = "";
   saidaPessoa.value = "";
   qtdDisponivel.innerHTML = "";
 }
 
+// 3° ABA - RETORNAR ITEM (RETORNO)
+function retornarItem() {
+  const nome = retornoNome.value;
+  const qtd = Number(retornoQtd.value);
+  const pessoa = retornoPessoa.value.trim();
+
+  if (!nome || qtd <= 0 || !pessoa) {
+    return mostrarMensagem(msgRetorno, "Preencha todos os campos!", "error");
+  }
+
+  estoque[nome] = (estoque[nome] || 0) + qtd;
+
+  const agora = new Date();
+  historico.push({
+    tipo: "Retorno",
+    item: nome,
+    quantidade: qtd,
+    pessoa: pessoa,
+    data: agora.toLocaleDateString('pt-BR'),
+    hora: agora.toLocaleTimeString('pt-BR')
+  });
+
+  salvarDados();
+  mostrarMensagem(msgRetorno, "Retorno registrado com sucesso!", "success");
+  
+  atualizarTabela();
+  atualizarSelects();
+  
+  retornoNome.value = "";
+  retornoQtd.value = "";
+  retornoPessoa.value = "";
+}
+
+// 4° ABA - GESTÃO DE ESTOQUE
 function atualizarTabela(filtro = "") {
   tabelaEstoque.innerHTML = "";
   const filtroLower = filtro.toLowerCase();
-  
   
   const itensFiltrados = Object.keys(estoque).filter(item => 
     item.toLowerCase().includes(filtroLower)
@@ -150,7 +209,7 @@ function atualizarTabela(filtro = "") {
 
   const containerPaginacao = document.getElementById("paginacaoEstoque");
   if (itensFiltrados.length === 0) {
-    tabelaEstoque.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#999;">Nenhum item no estoque</td></tr>';
+    tabelaEstoque.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#999;">Nenhum item encontrado</td></tr>';
     if (containerPaginacao) containerPaginacao.style.display = 'none';
     return;
   }
@@ -173,20 +232,14 @@ function atualizarTabela(filtro = "") {
     `;
   });
 
-  if (itensFiltrados.length === 0) {
-    tabelaEstoque.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#999;">Nenhum item no estoque</td></tr>';
-  }
-
-  
-  document.getElementById("paginaIndicadorEstoque").innerText = `PÃ¡gina ${paginaEstoqueAtual} de ${totalPaginas}`;
+  document.getElementById("paginaIndicadorEstoque").innerText = `Página ${paginaEstoqueAtual} de ${totalPaginas}`;
   document.getElementById("btnAnteriorEstoque").disabled = (paginaEstoqueAtual === 1);
   document.getElementById("btnProximaEstoque").disabled = (paginaEstoqueAtual >= totalPaginas);
 }
 
 function filtrarEstoque() {
   paginaEstoqueAtual = 1; 
-  const filtro = pesquisa.value.trim();
-  atualizarTabela(filtro);
+  atualizarTabela(pesquisa.value.trim());
 }
 
 function paginaAnteriorEstoque() {
@@ -214,36 +267,69 @@ function atualizarHistorico() {
   const containerPaginacao = document.getElementById("paginacaoHistorico");
 
   if (historico.length === 0) {
-    tabelaHistorico.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999;">Nenhuma movimentaÃ§Ã£o registrada</td></tr>';
+    tabelaHistorico.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Sem histórico de movimentações</td></tr>';
     if (containerPaginacao) containerPaginacao.style.display = 'none';
     return;
   }
 
   if (containerPaginacao) containerPaginacao.style.display = 'flex';
+  const totalPaginas = Math.ceil(historico.length / itensPorPagina);
+  
+  if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+  if (paginaAtual < 1) paginaAtual = 1;
+
   const inicio = (paginaAtual - 1) * itensPorPagina;
   const fim = inicio + itensPorPagina;
-  const totalPaginas = Math.ceil(historico.length / itensPorPagina);
 
-  
-  const historicoOrdenado = [...historico].reverse();
+  // Criar cópia do histórico original com o índice real preservado para a exclusão
+  const historicoComIndices = historico.map((item, index) => ({ ...item, realIndex: index }));
+  const historicoOrdenado = [...historicoComIndices].reverse();
   const itensExibidos = historicoOrdenado.slice(inicio, fim);
 
   itensExibidos.forEach((mov) => {
-    const corTipo = mov.tipo === "Entrada" ? "color: #188038;" : "color: #d93025;";
+    let corTipo = "color: #1a73e8;";
+    const tipo = (mov.tipo || "Entrada").toLowerCase();
+    
+    if (tipo === "entrada") corTipo = "color: #188038;";
+    else if (tipo === "saída" || tipo === "saida") corTipo = "color: #d93025;";
+    else if (tipo === "retorno") corTipo = "color: #f29900;";
+
+    // Capitaliza corretamente o tipo
+    const tipoFormatado = mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1).toLowerCase();
+
     tabelaHistorico.innerHTML += `
       <tr>
-        <td style="${corTipo} font-weight: bold;">${mov.tipo}</td>
+        <td style="${corTipo} font-weight: bold;">${tipoFormatado}</td>
         <td>${mov.item}</td>
         <td>${mov.quantidade}</td>
         <td>${mov.pessoa}</td>
         <td style="font-size: 11px;">${mov.data} ${mov.hora}</td>
+        <td>
+          <button onclick="excluirMovimentacao(${mov.realIndex})" style="background:#ddd; color:#333; padding:4px 8px; font-size:10px; border-radius:4px;">Excluir</button>
+        </td>
       </tr>
     `;
   });
 
-  document.getElementById('paginaIndicador').textContent = `PÃ¡gina ${paginaAtual} de ${totalPaginas}`;
+  document.getElementById('paginaIndicador').textContent = `Página ${paginaAtual} de ${totalPaginas}`;
   document.getElementById('btnAnterior').disabled = paginaAtual === 1;
-  document.getElementById('btnProxima').disabled = paginaAtual === totalPaginas || totalPaginas === 0;
+  document.getElementById('btnProxima').disabled = (paginaAtual >= totalPaginas);
+}
+
+function excluirMovimentacao(index) {
+  if (confirm("Deseja realmente excluir este registro?")) {
+    historico.splice(index, 1);
+    salvarDados();
+    atualizarHistorico();
+  }
+}
+
+function limparHistorico() {
+  if (confirm("Deseja apagar TODO o histórico? Esta ação não pode ser desfeita.")) {
+    historico = [];
+    salvarDados();
+    atualizarHistorico();
+  }
 }
 
 function paginaAnterior() {
@@ -261,29 +347,42 @@ function proximaPagina() {
   }
 }
 
-function atualizarSaidaSelect() {
-  const itemSelecionado = saidaNome.value;
-  saidaNome.innerHTML = '<option value="">Selecione um item...</option>';
+function atualizarSelects() {
+  const itemSelSaida = saidaNome.value;
+  const itemSelRetorno = retornoNome.value;
   
-  for (let item in estoque) {
-    const option = document.createElement("option");
-    option.value = item;
-    option.textContent = item;
-    saidaNome.appendChild(option);
-  }
+  const options = '<option value="">Selecione um item...</option>';
+  saidaNome.innerHTML = options;
+  retornoNome.innerHTML = options;
   
-  if (estoque[itemSelecionado]) {
-    saidaNome.value = itemSelecionado;
-  } else {
-    qtdDisponivel.innerHTML = "";
-  }
+  const itens = Object.keys(estoque).sort();
+  
+  itens.forEach(item => {
+    // Na saída, mostramos apenas se tiver quantidade
+    if (estoque[item] > 0) {
+      const optSaida = document.createElement("option");
+      optSaida.value = item;
+      optSaida.textContent = item;
+      saidaNome.appendChild(optSaida);
+    }
+
+    // No retorno, mostramos todos que já existiram
+    const optRetorno = document.createElement("option");
+    optRetorno.value = item;
+    optRetorno.textContent = item;
+    retornoNome.appendChild(optRetorno);
+  });
+  
+  if (estoque[itemSelSaida] && estoque[itemSelSaida] > 0) saidaNome.value = itemSelSaida;
+  if (estoque[itemSelRetorno] !== undefined) retornoNome.value = itemSelRetorno;
 }
 
 function atualizarQtdDisponivelSaida() {
   const item = saidaNome.value;
   if (item && estoque[item]) {
-    qtdDisponivel.innerHTML = `DisponÃ­vel: ${estoque[item]}`;
+    qtdDisponivel.innerHTML = `Disponível em estoque: ${estoque[item]}`;
   } else {
     qtdDisponivel.innerHTML = "";
   }
 }
+

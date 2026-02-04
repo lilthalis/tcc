@@ -3,55 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle de Estoque</title>
+  <title>Gestão de Almoxarifado</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <h1>Controle de Estoque</h1>
+  <h1>Gestão de Almoxarifado</h1>
 
-  <div class="main-layout">
-    <div class="col-left">
-      
+  <div class="tab-container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="openTab(event, 'tab-entrada')">1° Entrada</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-saida')">2° Saída</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-retorno')">3° Retorno</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-estoque')">4° Estoque</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-historico')">5° Histórico</button>
+    </div>
+
+    <!-- 1° ABA PARA entrada -->
+    <div id="tab-entrada" class="tab-content active">
       <section class="section-entrada">
-        <h2>Entrada de Item</h2>
+        <h2>Entrada de Produto Novo</h2>
         <div class="form-group">
-          <input type="text" id="entradaNome" placeholder="Nome do item">
+          <label for="entradaNome">Nome do Produto</label>
+          <input type="text" id="entradaNome" placeholder="Ex: Caneta Azul">
+          <label for="entradaQtd">Quantidade</label>
           <input type="number" id="entradaQtd" placeholder="Quantidade" min="1">
-          <button onclick="adicionarItem()" class="btn-entrada">Adicionar</button>
+          <label for="entradaPessoa">Responsável pela entrada</label>
+          <input type="text" id="entradaPessoa" placeholder="Seu nome">
+          <button onclick="adicionarItem()" class="btn-entrada">Confirmar Entrada</button>
           <div id="msgEntrada" class="msg-container"></div>
         </div>
       </section>
+    </div>
 
-      
+    <!-- 2° aba para saída -->
+    <div id="tab-saida" class="tab-content">
       <section class="section-saida">
-        <h2>SaÃ­da de Item</h2>
+        <h2>Saída de Item (Controle de Retirada)</h2>
         <div class="form-group">
+          <label for="saidaNome">Selecionar Item</label>
           <select id="saidaNome" onchange="atualizarQtdDisponivelSaida()">
             <option value="">Selecione um item...</option>
           </select>
           <div id="qtdDisponivel" class="info-text"></div>
+          
+          <label for="saidaQtd">Quantidade</label>
           <input type="number" id="saidaQtd" placeholder="Quantidade" min="1">
-          <input type="text" id="saidaPessoa" placeholder="Quem retirou">
-          <button onclick="removerItem()" class="btn-saida">Remover</button>
+          
+          <label for="saidaPessoa">Quem está retirando?</label>
+          <input type="text" id="saidaPessoa" placeholder="Nome do colaborador">
+          
+          <button onclick="removerItem()" class="btn-saida">Confirmar Saída</button>
           <div id="msgSaida" class="msg-container"></div>
         </div>
       </section>
     </div>
 
-    <div class="col-right">
-      
-      <section>
-        <h2>Estoque Atual</h2>
+    <!-- 3° aba para retorna o item ao estoque -->
+    <div id="tab-retorno" class="tab-content">
+      <section class="section-retorno">
+        <h2>Retorno ao Estoque</h2>
+        <div class="form-group">
+          <label for="retornoNome">Produto que está retornando</label>
+          <select id="retornoNome">
+            <option value="">Selecione um item...</option>
+          </select>
+          
+          <label for="retornoQtd">Quantidade</label>
+          <input type="number" id="retornoQtd" placeholder="Quantidade" min="1">
+          
+          <label for="retornoPessoa">Quem está devolvendo?</label>
+          <input type="text" id="retornoPessoa" placeholder="Nome do colaborador">
+          
+          <button onclick="retornarItem()" class="btn-retorno">Confirmar Retorno</button>
+          <div id="msgRetorno" class="msg-container"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 4° ABA PARA SABER OQUE TEM EM ESTOQUE -->
+    <div id="tab-estoque" class="tab-content">
+      <section class="section-estoque">
+        <h2>Items em Estoque</h2>
         <div class="search-bar">
-          <input type="text" id="pesquisa" placeholder="ðŸ” Pesquisar item..." onkeyup="filtrarEstoque()">
+          <input type="text" id="pesquisa" placeholder="🔍 Pesquisar no estoque..." onkeyup="filtrarEstoque()">
         </div>
         <div class="table-container">
           <table>
             <thead>
               <tr>
                 <th>Item</th>
-                <th>Quantidade</th>
+                <th>Quantidade Atual</th>
               </tr>
             </thead>
             <tbody id="tabelaEstoque"></tbody>
@@ -59,14 +101,19 @@
         </div>
         <div class="pagination" id="paginacaoEstoque">
           <button onclick="paginaAnteriorEstoque()" id="btnAnteriorEstoque">Anterior</button>
-          <span id="paginaIndicadorEstoque">PÃ¡gina 1</span>
-          <button onclick="proximaPaginaEstoque()" id="btnProximaEstoque">PrÃ³xima</button>
+          <span id="paginaIndicadorEstoque">Página 1</span>
+          <button onclick="proximaPaginaEstoque()" id="btnProximaEstoque">Próxima</button>
         </div>
       </section>
+    </div>
 
-      
-      <section>
-        <h2>HistÃ³rico de MovimentaÃ§Ãµes</h2>
+    <!-- 5° ABA PARA HISTÓRICO -->
+    <div id="tab-historico" class="tab-content">
+      <section class="section-historico">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 style="margin: 0; border: none;">Histórico de Movimentações</h2>
+          <button onclick="limparHistorico()" style="background: #666; font-size: 12px; padding: 8px 12px;">Limpar Tudo</button>
+        </div>
         <div class="table-container">
           <table>
             <thead>
@@ -74,8 +121,9 @@
                 <th>Tipo</th>
                 <th>Item</th>
                 <th>Qtd</th>
-                <th>ResponsÃ¡vel</th>
-                <th>Data</th>
+                <th>Responsável</th>
+                <th>Data/Hora</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody id="tabelaHistorico"></tbody>
@@ -83,8 +131,8 @@
         </div>
         <div class="pagination" id="paginacaoHistorico">
           <button onclick="paginaAnterior()" id="btnAnterior">Anterior</button>
-          <span id="paginaIndicador">PÃ¡gina 1</span>
-          <button onclick="proximaPagina()" id="btnProxima">PrÃ³xima</button>
+          <span id="paginaIndicador">Página 1</span>
+          <button onclick="proximaPagina()" id="btnProxima">Próxima</button>
         </div>
       </section>
     </div>

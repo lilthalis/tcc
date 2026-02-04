@@ -332,22 +332,6 @@ function atualizarHistorico() {
   document.getElementById('btnProxima').disabled = (paginaAtual >= totalPaginas);
 }
 
-function excluirMovimentacao(index) {
-  if (confirm("Deseja realmente excluir este registro?")) {
-    historico.splice(index, 1);
-    salvarDados();
-    atualizarHistorico();
-  }
-}
-
-function limparHistorico() {
-  if (confirm("Deseja apagar TODO o histórico? Esta ação não pode ser desfeita.")) {
-    historico = [];
-    salvarDados();
-    atualizarHistorico();
-  }
-}
-
 function paginaAnterior() {
   if (paginaAtual > 1) {
     paginaAtual--;

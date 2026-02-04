@@ -15,13 +15,32 @@ const msgEntrada = document.getElementById('msgEntrada');
 const msgSaida = document.getElementById('msgSaida');
 const msgRetorno = document.getElementById('msgRetorno');
 
-let estoque = JSON.parse(localStorage.getItem('estoque')) || {
+// Função segura para acessar localStorage
+function getLocalStorage(key, defaultValue) {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : defaultValue;
+  } catch (e) {
+    console.warn(`Erro ao ler ${key} do localStorage:`, e);
+    return defaultValue;
+  }
+}
+
+function setLocalStorage(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.warn(`Erro ao salvar ${key} no localStorage:`, e);
+  }
+}
+
+let estoque = getLocalStorage('estoque', {
   "Caneta Azul": 50,
   "Lápis HB": 100,
   "Borracha Branca": 45
-};
+});
 
-let historico = JSON.parse(localStorage.getItem('historico')) || [];
+let historico = getLocalStorage('historico', []);
 
 // Limpeza de dados antigos/corrompidos (sanitização)
 historico = historico.map(mov => {
@@ -43,7 +62,7 @@ historico = historico.map(mov => {
   const isInvalid = mov.item === "Produto não identificado" && mov.pessoa === "Não informado";
   return !isInvalid;
 });
-localStorage.setItem('historico', JSON.stringify(historico));
+setLocalStorage('historico', historico);
 
 let paginaAtual = 1;
 let paginaEstoqueAtual = 1;
@@ -74,8 +93,8 @@ function openTab(evt, tabName) {
 }
 
 function salvarDados() {
-  localStorage.setItem('estoque', JSON.stringify(estoque));
-  localStorage.setItem('historico', JSON.stringify(historico));
+  setLocalStorage('estoque', estoque);
+  setLocalStorage('historico', historico);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

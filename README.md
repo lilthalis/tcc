@@ -23,6 +23,16 @@ Caso não queira instalar nada:
 2.  Encontre o arquivo `index.html`.
 3.  Clique duas vezes nele ou arraste-o para dentro de uma aba do seu navegador (Chrome, Edge, Firefox, etc).
 
+### 3. Publicando no GitHub Pages
+Como este projeto é estático (HTML/CSS/JS), você pode hospedá-lo gratuitamente no GitHub Pages:
+
+1.  No seu repositório no GitHub, vá em **Settings** (Configurações).
+2.  No menu lateral esquerdo, clique em **Pages**.
+3.  Em **Build and deployment** > **Source**, verifique se está selecionado "Deploy from a branch".
+4.  Em **Branch**, selecione `main` e a pasta `/(root)`.
+5.  Clique em **Save**.
+6.  Aguarde alguns minutos e o GitHub fornecerá um link (ex: `https://seu-usuario.github.io/seu-repositorio/`) onde o projeto estará online!
+
 ## 🛠️ Tecnologias Utilizadas
 *   **HTML5 & CSS3:** Estruturação e layout responsivo com Grid e Flexbox.
 *   **JavaScript (Vanilla):** Lógica do sistema e manipulação do DOM.

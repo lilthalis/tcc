@@ -1,0 +1,186 @@
+// Modern ERP SCSS Theme
+@use "sass:color";
+
+// 1. Variables
+$primary: #007bff;
+$success: #28a745;
+$danger: #dc3545;
+$warning: #ffc107;
+$info: #17a2b8;
+
+// Light Theme Colors
+$light-bg: #f4f7f6;
+$light-card: #ffffff;
+$light-text: #2d3436;
+$light-border: #dfe6e9;
+
+// Dark Theme Colors
+$dark-bg: #121212;
+$dark-card: #1e1e1e;
+$dark-text: #e0e0e0;
+$dark-border: #333333;
+
+$font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+$border-radius: 10px;
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// 2. Theme Maps
+:root {
+  --bg-color: #{$light-bg};
+  --card-bg: #{$light-card};
+  --text-color: #{$light-text};
+  --border-color: #{$light-border};
+  --primary-color: #{$primary};
+}
+
+[data-theme="dark"] {
+  --bg-color: #{$dark-bg};
+  --card-bg: #{$dark-card};
+  --text-color: #{$dark-text};
+  --border-color: #{$dark-border};
+}
+
+// 3. Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 4. Base Reset
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-family;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  transition: $transition;
+  padding: 2rem;
+}
+
+// 5. Layout
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  
+  h1 {
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+// 6. Components
+.panel {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: $border-radius;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: $transition;
+
+  h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+    display: inline-block;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+  }
+}
+
+// Forms
+input, select {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  transition: $transition;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba($primary, 0.1);
+  }
+}
+
+// Buttons
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: $transition;
+  width: 100%;
+
+  &-success { background: $success; color: white; &:hover { background: darken($success, 10%); } }
+  &-danger { background: $danger; color: white; &:hover { background: darken($danger, 10%); } }
+}
+
+.theme-toggle {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  @include flex-center;
+  font-size: 1.2rem;
+}
+
+// Tables
+.table-container {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  th {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #888;
+    letter-spacing: 1px;
+  }
+
+  tr:hover { background: rgba($primary, 0.02); }
+}
+
+// Status Colors
+.entrada { color: $success; font-weight: 600; }
+.saida { color: $danger; font-weight: 600; }
+
+// Utils
+.text-muted { color: #888; font-size: 0.8rem; }

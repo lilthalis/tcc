@@ -1,126 +1,97 @@
-(function() {
-    // Variáveis locais para elementos (dentro do escopo deste script)
-    var filterForm, dataInicioInput, dataFimInput, tipoFiltroSelect, historicoTbody;
+/**
+ * Mock API for Stock Control
+ * Uses localStorage for persistence
+ */
 
-    function selectElements() {
-        filterForm = document.getElementById('filterForm');
-        dataInicioInput = document.getElementById('dataInicio');
-        dataFimInput = document.getElementById('dataFim');
-        tipoFiltroSelect = document.getElementById('tipoFiltro');
-        historicoTbody = document.getElementById('historico');
+window.mockAPI = {
+    initMockData() {
+        const currentEstoque = JSON.parse(localStorage.getItem('estoque') || '{}');
+        const currentHistorico = JSON.parse(localStorage.getItem('historico') || '[]');
         
-        if (filterForm) {
-            filterForm.removeEventListener('submit', onFilterSubmit);
-            filterForm.addEventListener('submit', onFilterSubmit);
+        if (Object.keys(currentEstoque).length < 5 || currentHistorico.length === 0) {
+            console.log("Reinicializando estoque e histórico com 10 produtos e algumas saídas...");
+            
+            const initialStock = {
+                'Notebook Gamer': 10,
+                'Mouse Sem Fio': 25,
+                'Monitor UltraWide': 5,
+                'Teclado Mecânico': 12,
+                'Headset 7.1': 15,
+                'Cadeira Office': 8,
+                'Webcam 4K': 7,
+                'Impressora Laser': 4,
+                'SSD 1TB': 30,
+                'Memória RAM 16GB': 20
+            };
+
+            const entries = Object.entries(initialStock).map(([produto, qtd], index) => ({
+                produto,
+                quantidade: qtd,
+                tipo: 'entrada',
+                data: new Date(Date.now() - (index * 3600000 + 1800000)).toISOString() // Mais antigo
+            }));
+
+            // Adicionando algumas saídas mockadas
+            const exits = [
+                { produto: 'Mouse Sem Fio', quantidade: 2, tipo: 'saida', data: new Date(Date.now() - 300000).toISOString() },
+                { produto: 'Notebook Gamer', quantidade: 1, tipo: 'saida', data: new Date(Date.now() - 600000).toISOString() },
+                { produto: 'SSD 1TB', quantidade: 5, tipo: 'saida', data: new Date(Date.now() - 900000).toISOString() }
+            ];
+
+            // Atualiza o estoque subtraindo as saídas
+            exits.forEach(exit => {
+                if (initialStock[exit.produto]) {
+                    initialStock[exit.produto] -= exit.quantidade;
+                }
+            });
+
+            const initialHistory = [...exits, ...entries]; // Saídas no topo por serem mais recentes
+
+            localStorage.setItem('estoque', JSON.stringify(initialStock));
+            localStorage.setItem('historico', JSON.stringify(initialHistory));
         }
-    }
+    },
 
-    function onFilterSubmit(e) {
-        e.preventDefault();
-        if (!dataInicioInput || !dataFimInput || !tipoFiltroSelect) return;
+    async loadStockMock() {
+        const data = localStorage.getItem('estoque');
+        return data ? JSON.parse(data) : {};
+    },
 
-        const dInicio = dataInicioInput.value; 
-        const dFim = dataFimInput.value;
-        const dataInicioVal = dInicio ? new Date(dInicio + 'T00:00:00') : null;
-        const dataFimVal = dFim ? new Date(dFim + 'T23:59:59') : null;
-        const tipo = tipoFiltroSelect.value;
+    async loadHistoryMock() {
+        const data = localStorage.getItem('historico');
+        return data ? JSON.parse(data) : [];
+    },
 
-        let filtered = (window.historico || []).filter(item => {
-            const itemDate = new Date(item.data);
-            if (dataInicioVal && itemDate < dataInicioVal) return false;
-            if (dataFimVal && itemDate > dataFimVal) return false;
-            if (tipo && item.tipo !== tipo) return false;
-            return true;
-        });
-        updateDisplay(filtered);
-    }
+    async addMovementMock(produto, quantidade, tipo) {
+        const estoque = await this.loadStockMock();
+        const historico = await this.loadHistoryMock();
+        const qtd = parseInt(quantidade);
 
-    async function loadHistory() {
-        try {
-            // Silencia erro de conexão se API não estiver rodando
-            const response = await fetch(`${window.API_BASE}/movements`).catch(() => ({ ok: false }));
-            if (response.ok) {
-                window.historico = await response.json();
-            } else {
-                window.historico = await loadHistoryMock();
+        if (tipo === 'entrada' || tipo === 'entry') {
+            estoque[produto] = (estoque[produto] || 0) + qtd;
+        } else if (tipo === 'saida' || tipo === 'exit') {
+            const atual = estoque[produto] || 0;
+            if (atual < qtd) {
+                alert('Estoque insuficiente para esta saída!');
+                throw new Error('Estoque insuficiente');
             }
-        } catch (error) {
-            window.historico = await loadHistoryMock();
+            estoque[produto] = atual - qtd;
         }
-    }
 
-    function updateDisplay(filtered = window.historico) {
-        if (!historicoTbody) return;
-        historicoTbody.innerHTML = '';
-        const displayList = Array.isArray(filtered) ? filtered : [];
-        displayList.forEach(item => {
-            const tr = document.createElement('tr');
-            const locale = (window.i18n && typeof window.i18n.getLang === 'function') ? window.i18n.getLang() : 'pt-BR';
-            const tipoLabel = (window.i18n && typeof window.i18n.t === 'function') ? window.i18n.t('tipo.' + item.tipo) : item.tipo;
-            const dateObj = new Date(item.data);
-            const dateStr = isNaN(dateObj.getTime()) ? item.data : dateObj.toLocaleDateString(locale);
-            tr.innerHTML = `<td>${dateStr}</td><td>${item.produto}</td><td>${item.quantidade}</td><td class="${item.tipo}">${tipoLabel}</td>`;
-            historicoTbody.appendChild(tr);
+        // Remove do estoque se chegar a zero
+        if (estoque[produto] <= 0) {
+            delete estoque[produto];
+        }
+
+        historico.push({
+            produto,
+            quantidade: qtd,
+            tipo: (tipo === 'entry' || tipo === 'entrada') ? 'entrada' : 'saida',
+            data: new Date().toISOString()
         });
+
+        localStorage.setItem('estoque', JSON.stringify(estoque));
+        localStorage.setItem('historico', JSON.stringify(historico));
+        return true;
     }
-
-    async function init() {
-        selectElements();
-        if (historicoTbody) {
-            await loadHistory();
-            updateDisplay();
-        }
-    }
-
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        init();
-    } else {
-        document.addEventListener('DOMContentLoaded', init);
-    }
-
-    window.addEventListener('i18n:ready', () => {
-        if (document.getElementById('historico')) {
-            selectElements();
-            updateDisplay();
-        }
-    });
-
-    window.addEventListener('app:navigated', (e) => {
-        const url = (e.detail && e.detail.url) || location.pathname;
-        if (url.includes('movimentacoes.html') || url.includes('movimentacoes')) {
-            init();
-        }
-    });
-})();
-
-// Globais compartilhadas e Mock
-window.API_BASE = window.API_BASE || localStorage.getItem('apiBase') || 'http://localhost:8080/api';
-if (typeof window.historico === 'undefined') window.historico = [];
-
-function initMockData() {
-    if (!localStorage.getItem('mockInitialized')) {
-        const mockStock = [
-            { produto: 'Teclado Mecânico', quantidade: 15 },
-            { produto: 'Mouse Óptico', quantidade: 8 },
-            { produto: 'Monitor 24"', quantidade: 5 },
-            { produto: 'Cabo HDMI', quantidade: 20 },
-            { produto: 'Fonte ATX 500W', quantidade: 3 }
-        ];
-        localStorage.setItem('mockStock', JSON.stringify(mockStock));
-
-        const mockMovements = [
-            { produto: 'Teclado Mecânico', quantidade: 10, tipo: 'entrada', data: '2024-01-15T10:00:00Z' },
-            { produto: 'Mouse Óptico', quantidade: 5, tipo: 'entrada', data: '2024-01-16T11:00:00Z' },
-            { produto: 'Monitor 24"', quantidade: 2, tipo: 'saida', data: '2024-01-17T12:00:00Z' },
-            { produto: 'Cabo HDMI', quantidade: 15, tipo: 'entrada', data: '2024-01-18T13:00:00Z' },
-            { produto: 'Fonte ATX 500W', quantidade: 1, tipo: 'saida', data: '2024-01-19T14:00:00Z' }
-        ];
-        localStorage.setItem('mockMovements', JSON.stringify(mockMovements));
-        localStorage.setItem('mockInitialized', 'true');
-    }
-}
-
-async function loadHistoryMock() {
-    initMockData();
-    return JSON.parse(localStorage.getItem('mockMovements') || '[]');
-}
+};

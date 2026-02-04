@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,7 @@
 
   <div class="main-layout">
     <div class="col-left">
-      <!-- ENTRADA -->
+      
       <section class="section-entrada">
         <h2>Entrada de Item</h2>
         <div class="form-group">
@@ -23,9 +23,9 @@
         </div>
       </section>
 
-      <!-- SAÍDA -->
+      
       <section class="section-saida">
-        <h2>Saída de Item</h2>
+        <h2>SaÃ­da de Item</h2>
         <div class="form-group">
           <select id="saidaNome" onchange="atualizarQtdDisponivelSaida()">
             <option value="">Selecione um item...</option>
@@ -40,11 +40,11 @@
     </div>
 
     <div class="col-right">
-      <!-- ESTOQUE -->
+      
       <section>
         <h2>Estoque Atual</h2>
         <div class="search-bar">
-          <input type="text" id="pesquisa" placeholder="🔍 Pesquisar item..." onkeyup="filtrarEstoque()">
+          <input type="text" id="pesquisa" placeholder="ðŸ” Pesquisar item..." onkeyup="filtrarEstoque()">
         </div>
         <div class="table-container">
           <table>
@@ -59,14 +59,14 @@
         </div>
         <div class="pagination" id="paginacaoEstoque">
           <button onclick="paginaAnteriorEstoque()" id="btnAnteriorEstoque">Anterior</button>
-          <span id="paginaIndicadorEstoque">Página 1</span>
-          <button onclick="proximaPaginaEstoque()" id="btnProximaEstoque">Próxima</button>
+          <span id="paginaIndicadorEstoque">PÃ¡gina 1</span>
+          <button onclick="proximaPaginaEstoque()" id="btnProximaEstoque">PrÃ³xima</button>
         </div>
       </section>
 
-      <!-- HISTÓRICO -->
+      
       <section>
-        <h2>Histórico de Movimentações</h2>
+        <h2>HistÃ³rico de MovimentaÃ§Ãµes</h2>
         <div class="table-container">
           <table>
             <thead>
@@ -74,7 +74,7 @@
                 <th>Tipo</th>
                 <th>Item</th>
                 <th>Qtd</th>
-                <th>Responsável</th>
+                <th>ResponsÃ¡vel</th>
                 <th>Data</th>
               </tr>
             </thead>
@@ -83,8 +83,8 @@
         </div>
         <div class="pagination" id="paginacaoHistorico">
           <button onclick="paginaAnterior()" id="btnAnterior">Anterior</button>
-          <span id="paginaIndicador">Página 1</span>
-          <button onclick="proximaPagina()" id="btnProxima">Próxima</button>
+          <span id="paginaIndicador">PÃ¡gina 1</span>
+          <button onclick="proximaPagina()" id="btnProxima">PrÃ³xima</button>
         </div>
       </section>
     </div>

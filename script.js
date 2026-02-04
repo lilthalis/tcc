@@ -1,4 +1,4 @@
-const entradaNome = document.getElementById('entradaNome');
+﻿const entradaNome = document.getElementById('entradaNome');
 const entradaQtd = document.getElementById('entradaQtd');
 const saidaNome = document.getElementById('saidaNome');
 const saidaQtd = document.getElementById('saidaQtd');
@@ -12,13 +12,13 @@ const msgSaida = document.getElementById('msgSaida');
 
 let estoque = JSON.parse(localStorage.getItem('estoque')) || {
   "Caneta Azul": 50,
-  "Lápis HB": 100,
+  "LÃ¡pis HB": 100,
   "Borracha Branca": 45,
-  "Caderno Universitário": 20,
+  "Caderno UniversitÃ¡rio": 20,
   "Papel A4 (Pacote)": 10,
-  "Régua 30cm": 15,
+  "RÃ©gua 30cm": 15,
   "Tesoura Escolar": 12,
-  "Cola Bastão": 30,
+  "Cola BastÃ£o": 30,
   "Grampeador": 8,
   "Clips (Caixa)": 100,
   "Pasta Suspensa": 40,
@@ -30,11 +30,11 @@ let estoque = JSON.parse(localStorage.getItem('estoque')) || {
 let historico = JSON.parse(localStorage.getItem('historico')) || [
   { tipo: "Entrada", item: "Caneta Azul", quantidade: 10, pessoa: "Estoque Central", data: "04/02/2026", hora: "10:00:00" },
   { tipo: "Entrada", item: "Papel A4 (Pacote)", quantidade: 5, pessoa: "Estoque Central", data: "04/02/2026", hora: "10:05:00" },
-  { tipo: "Saída", item: "Lápis HB", quantidade: 2, pessoa: "João Silva", data: "04/02/2026", hora: "14:30:00" },
-  { tipo: "Saída", item: "Borracha Branca", quantidade: 1, pessoa: "Maria Souza", data: "04/02/2026", hora: "15:00:00" },
-  { tipo: "Entrada", item: "Régua 30cm", quantidade: 15, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:10:00" },
+  { tipo: "SaÃ­da", item: "LÃ¡pis HB", quantidade: 2, pessoa: "JoÃ£o Silva", data: "04/02/2026", hora: "14:30:00" },
+  { tipo: "SaÃ­da", item: "Borracha Branca", quantidade: 1, pessoa: "Maria Souza", data: "04/02/2026", hora: "15:00:00" },
+  { tipo: "Entrada", item: "RÃ©gua 30cm", quantidade: 15, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:10:00" },
   { tipo: "Entrada", item: "Tesoura Escolar", quantidade: 12, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:15:00" },
-  { tipo: "Entrada", item: "Cola Bastão", quantidade: 30, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:20:00" },
+  { tipo: "Entrada", item: "Cola BastÃ£o", quantidade: 30, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:20:00" },
   { tipo: "Entrada", item: "Grampeador", quantidade: 8, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:25:00" },
   { tipo: "Entrada", item: "Clips (Caixa)", quantidade: 100, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:30:00" },
   { tipo: "Entrada", item: "Pasta Suspensa", quantidade: 40, pessoa: "Estoque Central", data: "04/02/2026", hora: "15:35:00" },
@@ -78,7 +78,7 @@ function adicionarItem() {
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
 
-  // Registrar no histórico
+  
   const agora = new Date();
   historico.push({
     tipo: "Entrada",
@@ -115,10 +115,10 @@ function removerItem() {
   estoque[nome] -= qtd;
   if (estoque[nome] === 0) delete estoque[nome];
 
-  // Registrar no histórico
+  
   const agora = new Date();
   historico.push({
-    tipo: "Saída",
+    tipo: "SaÃ­da",
     item: nome,
     quantidade: qtd,
     pessoa: pessoa,
@@ -143,7 +143,7 @@ function atualizarTabela(filtro = "") {
   tabelaEstoque.innerHTML = "";
   const filtroLower = filtro.toLowerCase();
   
-  // Obter itens filtrados
+  
   const itensFiltrados = Object.keys(estoque).filter(item => 
     item.toLowerCase().includes(filtroLower)
   );
@@ -177,14 +177,14 @@ function atualizarTabela(filtro = "") {
     tabelaEstoque.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#999;">Nenhum item no estoque</td></tr>';
   }
 
-  // Atualizar indicadores e botões
-  document.getElementById("paginaIndicadorEstoque").innerText = `Página ${paginaEstoqueAtual} de ${totalPaginas}`;
+  
+  document.getElementById("paginaIndicadorEstoque").innerText = `PÃ¡gina ${paginaEstoqueAtual} de ${totalPaginas}`;
   document.getElementById("btnAnteriorEstoque").disabled = (paginaEstoqueAtual === 1);
   document.getElementById("btnProximaEstoque").disabled = (paginaEstoqueAtual >= totalPaginas);
 }
 
 function filtrarEstoque() {
-  paginaEstoqueAtual = 1; // Resetar para primeira página ao filtrar
+  paginaEstoqueAtual = 1; 
   const filtro = pesquisa.value.trim();
   atualizarTabela(filtro);
 }
@@ -214,7 +214,7 @@ function atualizarHistorico() {
   const containerPaginacao = document.getElementById("paginacaoHistorico");
 
   if (historico.length === 0) {
-    tabelaHistorico.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999;">Nenhuma movimentação registrada</td></tr>';
+    tabelaHistorico.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999;">Nenhuma movimentaÃ§Ã£o registrada</td></tr>';
     if (containerPaginacao) containerPaginacao.style.display = 'none';
     return;
   }
@@ -224,7 +224,7 @@ function atualizarHistorico() {
   const fim = inicio + itensPorPagina;
   const totalPaginas = Math.ceil(historico.length / itensPorPagina);
 
-  // Ordenar decrescente para pegar os mais recentes
+  
   const historicoOrdenado = [...historico].reverse();
   const itensExibidos = historicoOrdenado.slice(inicio, fim);
 
@@ -241,7 +241,7 @@ function atualizarHistorico() {
     `;
   });
 
-  document.getElementById('paginaIndicador').textContent = `Página ${paginaAtual} de ${totalPaginas}`;
+  document.getElementById('paginaIndicador').textContent = `PÃ¡gina ${paginaAtual} de ${totalPaginas}`;
   document.getElementById('btnAnterior').disabled = paginaAtual === 1;
   document.getElementById('btnProxima').disabled = paginaAtual === totalPaginas || totalPaginas === 0;
 }
@@ -282,7 +282,7 @@ function atualizarSaidaSelect() {
 function atualizarQtdDisponivelSaida() {
   const item = saidaNome.value;
   if (item && estoque[item]) {
-    qtdDisponivel.innerHTML = `Disponível: ${estoque[item]}`;
+    qtdDisponivel.innerHTML = `DisponÃ­vel: ${estoque[item]}`;
   } else {
     qtdDisponivel.innerHTML = "";
   }

@@ -1,0 +1,210 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
+  padding: 20px;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  color: #1a73e8;
+  margin-bottom: 30px;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.col-left, .col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+  height: fit-content;
+}
+
+section:hover {
+  transform: translateY(-2px);
+}
+
+section h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.section-entrada h2 {
+  color: #188038;
+}
+
+.section-saida h2 {
+  color: #d93025;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+}
+
+.info-text {
+  font-size: 12px;
+  color: #1a73e8;
+  font-weight: bold;
+  height: 15px;
+}
+
+.msg-container {
+  font-size: 13px;
+  min-height: 18px;
+  margin-top: 5px;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 4px;
+  padding: 4px;
+  display: none;
+}
+
+.msg-error {
+  display: block;
+  color: #d93025;
+  background-color: #fce8e6;
+}
+
+.msg-success {
+  display: block;
+  color: #188038;
+  background-color: #e6f4ea;
+}
+
+button {
+  padding: 12px;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #1557b0;
+}
+
+.btn-entrada {
+  background: #188038;
+}
+
+.btn-entrada:hover {
+  background: #13652b;
+}
+
+.btn-saida {
+  background: #d93025;
+}
+
+.btn-saida:hover {
+  background: #b2251a;
+}
+
+.search-bar {
+  margin-bottom: 15px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #f0f2f5;
+}
+
+.pagination button {
+  width: auto;
+  padding: 8px 15px;
+  font-size: 13px;
+  background: #f8f9fa;
+  color: #555;
+  border: 1px solid #ddd;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #e9ecef;
+  color: #1a73e8;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#paginaIndicador {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #666;
+}
+
+tr:hover {
+  background-color: #fafafa;
+}
+
+@media (max-width: 900px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+}

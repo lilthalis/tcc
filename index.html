@@ -1,235 +1,95 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERP | Controle de Estoque</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Estoque</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>📦 Estoque Pro</h1>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button class="btn btn-primary" onclick="exportarCSV()">📊 Exportar CSV</button>
-                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar Tema">🌙</button>
-            </div>
-        </header>
+  <h1>Controle de Estoque</h1>
 
-        <!-- Dashboard Summary -->
-        <div class="dashboard-summary">
-            <div class="summary-card">
-                <h3>Total de Itens</h3>
-                <p id="totalProdutos">0</p>
-                <small>Tipos de produtos</small>
-            </div>
-            <div class="summary-card">
-                <h3>Qtd em Estoque</h3>
-                <p id="totalQtd">0</p>
-                <small>Unidades totais</small>
-            </div>
-            <div class="summary-card alert">
-                <h3>Estoque Crítico</h3>
-                <p id="estoqueCritico">0</p>
-                <small>Abaixo de 5 unidades</small>
-            </div>
-            <div class="summary-card info">
-                <h3>Movimentações</h3>
-                <p id="movimentacoesHoje">0</p>
-                <small>Nas últimas 24h</small>
-            </div>
+  <div class="main-layout">
+    <div class="col-left">
+      <!-- ENTRADA -->
+      <section class="section-entrada">
+        <h2>Entrada de Item</h2>
+        <div class="form-group">
+          <input type="text" id="entradaNome" placeholder="Nome do item">
+          <input type="number" id="entradaQtd" placeholder="Quantidade" min="1">
+          <button onclick="adicionarItem()" class="btn-entrada">Adicionar</button>
+          <div id="msgEntrada" class="msg-container"></div>
         </div>
+      </section>
 
-        <main class="dashboard-grid">
-            
-            <!-- Entrada -->
-            <section class="panel">
-                <h2>Entrada de Itens</h2>
-                <div class="form-group">
-                    <input type="text" id="entradaNome" placeholder="Nome do produto">
-                    <input type="number" id="entradaQtd" placeholder="Quantidade" min="1">
-                    <button class="btn btn-success" onclick="handleMovimento('entry')">Adicionar ao Estoque</button>
-                </div>
-            </section>
-
-            <!-- Saída -->
-            <section class="panel">
-                <h2>Saída de Itens</h2>
-                <div class="form-group">
-                    <select id="saidaNome" onchange="atualizarQtdDisponivelSaida()">
-                        <option value="">Selecione um item...</option>
-                    </select>
-                    <p id="qtdDisponivel" class="text-muted"></p>
-                    <input type="number" id="saidaQtd" placeholder="Quantidade">
-                    <input type="text" id="saidaPessoa" placeholder="Responsável pela retirada">
-                    <button class="btn btn-danger" onclick="handleMovimento('exit')">Registrar Saída</button>
-                </div>
-            </section>
-
-            <!-- Tabela de Estoque -->
-            <section class="panel" style="grid-column: span 1;">
-                <h2>Estoque Atual</h2>
-                <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;">
-                    <input type="text" id="pesquisa" placeholder="🔍 Filtrar produtos..." onkeyup="filtrarEstoque()" style="flex: 2; margin-bottom: 0;">
-                    <input type="number" id="filtroQtd" placeholder="Qtd mínima" onkeyup="filtrarEstoque()" onchange="filtrarEstoque()" style="flex: 1; margin-bottom: 0;">
-                </div>
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="text-start" onclick="toggleSort('produto')" style="cursor:pointer">
-                                    Produto <span id="sort-produto">↕</span>
-                                </th>
-                                <th class="text-center" onclick="toggleSort('quantidade')" style="cursor:pointer">
-                                    Qtd <span id="sort-quantidade">↕</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="estoque"></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Histórico -->
-            <section class="panel">
-                <h2>Histórico Recente</h2>
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="text-start">Produto</th>
-                                <th class="text-center">Qtd</th>
-                                <th class="text-center">Tipo</th>
-                                <th class="text-end">Data</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historico"></tbody>
-                    </table>
-                </div>
-                <!-- Paginação -->
-                <div class="pagination-container">
-                    <button class="btn btn-sm" onclick="mudarPagina(-1)" id="btnPrev">Anterior</button>
-                    <span id="pageInfo">Página 1 de 1</span>
-                    <button class="btn btn-sm" onclick="mudarPagina(1)" id="btnNext">Próxima</button>
-                </div>
-            </section>
-
-        </main>
+      <!-- SAÍDA -->
+      <section class="section-saida">
+        <h2>Saída de Item</h2>
+        <div class="form-group">
+          <select id="saidaNome" onchange="atualizarQtdDisponivelSaida()">
+            <option value="">Selecione um item...</option>
+          </select>
+          <div id="qtdDisponivel" class="info-text"></div>
+          <input type="number" id="saidaQtd" placeholder="Quantidade" min="1">
+          <input type="text" id="saidaPessoa" placeholder="Quem retirou">
+          <button onclick="removerItem()" class="btn-saida">Remover</button>
+          <div id="msgSaida" class="msg-container"></div>
+        </div>
+      </section>
     </div>
 
-    <!-- Hidden Bridge Form -->
-    <form id="form" style="display:none;">
-        <input id="produto" name="produto">
-        <input id="quantidade" name="quantidade" type="number">
-        <input id="tipo" name="tipo">
-    </form>
+    <div class="col-right">
+      <!-- ESTOQUE -->
+      <section>
+        <h2>Estoque Atual</h2>
+        <div class="search-bar">
+          <input type="text" id="pesquisa" placeholder="🔍 Pesquisar item..." onkeyup="filtrarEstoque()">
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Quantidade</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaEstoque"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="paginacaoEstoque">
+          <button onclick="paginaAnteriorEstoque()" id="btnAnteriorEstoque">Anterior</button>
+          <span id="paginaIndicadorEstoque">Página 1</span>
+          <button onclick="proximaPaginaEstoque()" id="btnProximaEstoque">Próxima</button>
+        </div>
+      </section>
 
-    <script>
-        // Função unificada para movimentos
-        function handleMovimento(tipo) {
-            const isEntry = tipo === 'entry';
-            const prefix = isEntry ? 'entrada' : 'saida';
-            
-            const nome = document.getElementById(`${prefix}Nome`).value.trim();
-            const qtd = parseInt(document.getElementById(`${prefix}Qtd`).value);
+      <!-- HISTÓRICO -->
+      <section>
+        <h2>Histórico de Movimentações</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Item</th>
+                <th>Qtd</th>
+                <th>Responsável</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaHistorico"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="paginacaoHistorico">
+          <button onclick="paginaAnterior()" id="btnAnterior">Anterior</button>
+          <span id="paginaIndicador">Página 1</span>
+          <button onclick="proximaPagina()" id="btnProxima">Próxima</button>
+        </div>
+      </section>
+    </div>
+  </div>
 
-            if (!nome || isNaN(qtd) || qtd <= 0) {
-                alert('Por favor, preencha os campos corretamente.');
-                return;
-            }
-
-            const form = document.getElementById('form');
-            form.querySelector('#produto').value = nome;
-            form.querySelector('#quantidade').value = qtd;
-            form.querySelector('#tipo').value = tipo;
-            
-            // Tenta disparar o submit de forma que o script.js capture
-            if (typeof form.requestSubmit === 'function') {
-                form.requestSubmit();
-            } else {
-                form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-            }
-
-            // Reset campos
-            if (isEntry) {
-                document.getElementById('entradaNome').value = '';
-                document.getElementById('entradaQtd').value = '';
-            } else {
-                document.getElementById('saidaQtd').value = '';
-                // O select de saída e o responsável são tratados separadamente se desejar
-                if(document.getElementById('saidaPessoa')) document.getElementById('saidaPessoa').value = '';
-            }
-        }
-
-        // Alternar Tema
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', newTheme);
-            document.querySelector('.theme-toggle').textContent = newTheme === 'light' ? '🌙' : '☀️';
-        }
-
-        // Otimização do Filtro
-        function filtrarEstoque() {
-            const query = document.getElementById('pesquisa').value.toLowerCase();
-            const minQtd = parseInt(document.getElementById('filtroQtd').value) || 0;
-            const rows = document.querySelectorAll('#estoque tr');
-            
-            rows.forEach(row => {
-                if (row.cells.length >= 2) {
-                    const nome = row.cells[0].textContent.toLowerCase();
-                    const qtd = parseInt(row.cells[1].textContent) || 0;
-                    
-                    const matchesNome = nome.includes(query);
-                    const matchesQtd = qtd >= minQtd;
-                    
-                    row.style.display = (matchesNome && matchesQtd) ? '' : 'none';
-                }
-            });
-        }
-
-        // Observer para atualizar o select de saídas automaticamente
-        const observer = new MutationObserver(() => {
-            const select = document.getElementById('saidaNome');
-            if (!select) return;
-            const rows = document.querySelectorAll('#estoque tr');
-            const currentVal = select.value;
-            
-            select.innerHTML = '<option value="">Selecione um item...</option>';
-            rows.forEach(row => {
-                if (row.cells.length >= 2) {
-                    const nome = row.cells[0].textContent;
-                    const qtd = row.cells[1].textContent;
-                    if (nome && nome !== "Estoque vazio") {
-                        const opt = new Option(`${nome} (${qtd})`, nome);
-                        select.add(opt);
-                    }
-                }
-            });
-            select.value = currentVal;
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const target = document.getElementById('estoque');
-            observer.observe(target, { childList: true });
-        });
-
-        function atualizarQtdDisponivelSaida() {
-            const select = document.getElementById('saidaNome');
-            const produto = select.value;
-            const qtdDisp = window.estoque ? (window.estoque[produto] || 0) : 0;
-            document.getElementById('qtdDisponivel').textContent = `Disponível: ${qtdDisp}`;
-            const qtdInput = document.getElementById('saidaQtd');
-            qtdInput.max = qtdDisp;
-            qtdInput.placeholder = `Máx: ${qtdDisp}`;
-        }
-    </script>
-
-    <!-- Scripts Externos -->
-    <script src="assets/js/script-mov.js" defer></script>
-    <script src="assets/js/script.js" defer></script>
+  <script src="script.js"></script>
 </body>
 </html>

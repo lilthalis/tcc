@@ -212,11 +212,11 @@ function excluirHistorico(realIndex) {
 function adicionarItem() {
   const nome = entradaNome.value.trim();
   const qtd = Number(entradaQtd.value);
-  const pessoa = entradaPessoa.value.trim() || "Sistema";
+  const pessoa = entradaPessoa.value.trim();
   const local = entradaLocal.value.trim();
 
-  if (!nome || qtd <= 0 || !Number.isInteger(qtd)) {
-    return mostrarMensagem(msgEntrada, "Preencha nome e quantidade (número inteiro) corretamente!", "error");
+  if (!nome || nome.length > 100 || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
+    return mostrarMensagem(msgEntrada, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
@@ -249,8 +249,8 @@ function removerItem() {
   const pessoa = saidaPessoa.value.trim();
   const local = saidaLocal.value.trim();
 
-  if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || !local) {
-    return mostrarMensagem(msgSaida, "Preencha todos os campos com valores válidos!", "error");
+  if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
+    return mostrarMensagem(msgSaida, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
   }
 
   if (!estoque[nome] || estoque[nome] < qtd) {
@@ -292,8 +292,8 @@ function retornarItem() {
   const pessoa = retornoPessoa.value.trim();
   const local = retornoLocal.value.trim();
 
-  if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || !local) {
-    return mostrarMensagem(msgRetorno, "Preencha todos os campos com valores válidos!", "error");
+  if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
+    return mostrarMensagem(msgRetorno, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
@@ -348,9 +348,10 @@ function atualizarTabela(filtro = "") {
 
   itensPaginados.forEach(item => {
     const itemEscapado = item.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const itemHtml = item.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     tabelaEstoque.innerHTML += `
       <tr>
-        <td>${item}</td>
+        <td>${itemHtml}</td>
         <td style="text-align: center;">${estoque[item]}</td>
         <td style="text-align: center;">
           <button class="btn-estoque-deletar" onclick="deletarItemEstoque('${itemEscapado}')">Deletar</button>
@@ -429,14 +430,16 @@ function atualizarHistorico() {
 
     // Capitaliza corretamente o tipo
     const tipoFormatado = mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1).toLowerCase();
-    const localExibicao = mov.local || '-';
+    const localExibicao = (mov.local || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    const itemHtml = (mov.item || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    const pessoaHtml = (mov.pessoa || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
     tabelaHistorico.innerHTML += `
       <tr>
         <td class="${classeTipo}">${tipoFormatado}</td>
-        <td>${mov.item}</td>
+        <td>${itemHtml}</td>
         <td style="text-align: center;">${mov.quantidade}</td>
-        <td class="historico-responsavel">${mov.pessoa}</td>
+        <td class="historico-responsavel">${pessoaHtml}</td>
         <td style="font-size: 13px; color: #90caf9;">${localExibicao}</td>
         <td>
           <div class="historico-date">

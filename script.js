@@ -61,6 +61,7 @@ historico = historico.map(mov => {
     item: mov.item || "Produto não identificado",
     quantidade: mov.quantidade || 0,
     pessoa: mov.pessoa || "Não informado",
+    local: mov.local || "",
     data: mov.data || "Data indisponível",
     hora: mov.hora || ""
   };
@@ -300,7 +301,7 @@ function retornarItem() {
   const pessoa = retornoPessoa.value.trim();
   const local = retornoLocal.value.trim();
 
-  if (!nome || qtd <= 0 || !pessoa) {
+  if (!nome || qtd <= 0 || !pessoa || !local) {
     return mostrarMensagem(msgRetorno, "Preencha todos os campos!", "error");
   }
 
@@ -340,7 +341,7 @@ function atualizarTabela(filtro = "") {
 
   const containerPaginacao = document.getElementById("paginacaoEstoque");
   if (itensFiltrados.length === 0) {
-    tabelaEstoque.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#999;">Nenhum item encontrado</td></tr>';
+    tabelaEstoque.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#999;">Nenhum item encontrado</td></tr>';
     if (containerPaginacao) containerPaginacao.style.display = 'none';
     return;
   }

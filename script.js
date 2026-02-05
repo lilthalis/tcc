@@ -362,7 +362,7 @@ function atualizarTabela(filtro = "") {
         <td>${item}</td>
         <td style="text-align: center;">${estoque[item]}</td>
         <td style="text-align: center;">
-          <button class="btn-estoque-editar" onclick="abrirModalEditarItem('${itemEscapado}')">Editar</button>
+          <button class="btn-estoque-deletar" onclick="deletarItemEstoque('${itemEscapado}')">Deletar</button>
         </td>
       </tr>
     `;

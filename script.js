@@ -535,46 +535,7 @@ function fecharModalEditarItem() {
   document.getElementById('modalEditarQtd').value = '';
 }
 
-function adicionarQuantidadeItem() {
-  if (!itemEmEdicao) return;
-  const qtd = Number(document.getElementById('modalEditarQtd').value);
-  
-  if (!qtd || qtd <= 0 || !Number.isInteger(qtd)) {
-    mostrarMensagem(msgEstoque, 'Digite uma quantidade válida (número inteiro)', 'error');
-    return;
-  }
-  
-  estoque[itemEmEdicao] += qtd;
-  salvarDados();
-  atualizarTabela();
-  atualizarSelects();
-  
-  mostrarMensagem(msgEstoque, `${qtd} adicionado(s) a "${itemEmEdicao}"`, 'success');
-  fecharModalEditarItem();
-}
 
-function removerQuantidadeItem() {
-  if (!itemEmEdicao) return;
-  const qtd = Number(document.getElementById('modalEditarQtd').value);
-  
-  if (!qtd || qtd <= 0 || !Number.isInteger(qtd)) {
-    mostrarMensagem(msgEstoque, 'Digite uma quantidade válida (número inteiro)', 'error');
-    return;
-  }
-  
-  if (estoque[itemEmEdicao] < qtd) {
-    mostrarMensagem(msgEstoque, 'Quantidade insuficiente no estoque', 'error');
-    return;
-  }
-  
-  estoque[itemEmEdicao] -= qtd;
-  salvarDados();
-  atualizarTabela();
-  atualizarSelects();
-  
-  mostrarMensagem(msgEstoque, `${qtd} removido(s) de "${itemEmEdicao}"`, 'success');
-  fecharModalEditarItem();
-}
 
 function deletarItemEstoque() {
   if (!itemEmEdicao) return;

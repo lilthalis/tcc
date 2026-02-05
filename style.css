@@ -297,6 +297,10 @@ tbody tr:hover {
   animation: fadeIn 0.3s ease;
 }
 
+#modalSenha {
+  z-index: 2000;
+}
+
 .modal.active {
   display: flex;
   align-items: center;

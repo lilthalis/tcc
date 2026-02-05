@@ -146,15 +146,6 @@ function confirmarSenha() {
   }
 }
 
-// Fechar modal ao clicar fora
-document.addEventListener('click', (e) => {
-  const modal = document.getElementById('modalSenha');
-  const modalContent = document.querySelector('.modal-content');
-  if (e.target === modal && modalContent && !modalContent.contains(e.target)) {
-    fecharModalSenha();
-  }
-}, true);
-
 function salvarDados() {
   setLocalStorage('estoque', estoque);
   setLocalStorage('historico', historico);
@@ -224,8 +215,8 @@ function adicionarItem() {
   const pessoa = entradaPessoa.value.trim() || "Sistema";
   const local = entradaLocal.value.trim();
 
-  if (!nome || qtd <= 0) {
-    return mostrarMensagem(msgEntrada, "Preencha nome e quantidade corretamente!", "error");
+  if (!nome || qtd <= 0 || !Number.isInteger(qtd)) {
+    return mostrarMensagem(msgEntrada, "Preencha nome e quantidade (número inteiro) corretamente!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
@@ -258,8 +249,8 @@ function removerItem() {
   const pessoa = saidaPessoa.value.trim();
   const local = saidaLocal.value.trim();
 
-  if (!nome || qtd <= 0 || !pessoa || !local) {
-    return mostrarMensagem(msgSaida, "Preencha todos os campos!", "error");
+  if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || !local) {
+    return mostrarMensagem(msgSaida, "Preencha todos os campos com valores válidos!", "error");
   }
 
   if (!estoque[nome] || estoque[nome] < qtd) {
@@ -301,8 +292,8 @@ function retornarItem() {
   const pessoa = retornoPessoa.value.trim();
   const local = retornoLocal.value.trim();
 
-  if (!nome || qtd <= 0 || !pessoa || !local) {
-    return mostrarMensagem(msgRetorno, "Preencha todos os campos!", "error");
+  if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || !local) {
+    return mostrarMensagem(msgRetorno, "Preencha todos os campos com valores válidos!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
@@ -540,5 +531,5 @@ document.addEventListener('click', (e) => {
   if (e.target === modalSenha && modalContent && !modalContent.contains(e.target)) {
     fecharModalSenha();
   }
-});
+}, true);
 

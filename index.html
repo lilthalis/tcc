@@ -30,6 +30,8 @@
           <input type="number" id="entradaQtd" placeholder="Quantidade" min="1">
           <label for="entradaPessoa">Responsável pela entrada</label>
           <input type="text" id="entradaPessoa" placeholder="Seu nome">
+          <label for="entradaLocal">Local de armazenamento</label>
+          <input type="text" id="entradaLocal" placeholder="Ex: Estoque Central, Sala 01, etc.">
           <button onclick="adicionarItem()" class="btn-entrada">Confirmar Entrada</button>
           <div id="msgEntrada" class="msg-container"></div>
         </div>
@@ -77,6 +79,9 @@
           
           <label for="retornoPessoa">Quem está devolvendo?</label>
           <input type="text" id="retornoPessoa" placeholder="Nome do colaborador">
+          
+          <label for="retornoLocal">Local de retorno</label>
+          <input type="text" id="retornoLocal" placeholder="Ex: Estoque Central, Sala 01, etc.">
           
           <button onclick="retornarItem()" class="btn-retorno">Confirmar Retorno</button>
           <div id="msgRetorno" class="msg-container"></div>

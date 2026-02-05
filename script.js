@@ -1,6 +1,7 @@
 ﻿const entradaNome = document.getElementById('entradaNome');
 const entradaQtd = document.getElementById('entradaQtd');
 const entradaPessoa = document.getElementById('entradaPessoa');
+const entradaLocal = document.getElementById('entradaLocal');
 const saidaNome = document.getElementById('saidaNome');
 const saidaQtd = document.getElementById('saidaQtd');
 const saidaPessoa = document.getElementById('saidaPessoa');
@@ -8,6 +9,7 @@ const saidaLocal = document.getElementById('saidaLocal');
 const retornoNome = document.getElementById('retornoNome');
 const retornoQtd = document.getElementById('retornoQtd');
 const retornoPessoa = document.getElementById('retornoPessoa');
+const retornoLocal = document.getElementById('retornoLocal');
 const qtdDisponivel = document.getElementById('qtdDisponivel');
 const pesquisa = document.getElementById('pesquisa');
 const tabelaEstoque = document.getElementById('tabelaEstoque');
@@ -219,6 +221,7 @@ function adicionarItem() {
   const nome = entradaNome.value.trim();
   const qtd = Number(entradaQtd.value);
   const pessoa = entradaPessoa.value.trim() || "Sistema";
+  const local = entradaLocal.value.trim();
 
   if (!nome || qtd <= 0) {
     return mostrarMensagem(msgEntrada, "Preencha nome e quantidade corretamente!", "error");
@@ -232,6 +235,7 @@ function adicionarItem() {
     item: nome,
     quantidade: qtd,
     pessoa: pessoa,
+    local: local,
     data: agora.toLocaleDateString('pt-BR'),
     hora: agora.toLocaleTimeString('pt-BR')
   });
@@ -242,6 +246,7 @@ function adicionarItem() {
   entradaNome.value = "";
   entradaQtd.value = "";
   entradaPessoa.value = "";
+  entradaLocal.value = "";
   mostrarMensagem(msgEntrada, "Entrada registrada com sucesso!", "success");
 }
 
@@ -293,6 +298,7 @@ function retornarItem() {
   const nome = retornoNome.value;
   const qtd = Number(retornoQtd.value);
   const pessoa = retornoPessoa.value.trim();
+  const local = retornoLocal.value.trim();
 
   if (!nome || qtd <= 0 || !pessoa) {
     return mostrarMensagem(msgRetorno, "Preencha todos os campos!", "error");
@@ -306,6 +312,7 @@ function retornarItem() {
     item: nome,
     quantidade: qtd,
     pessoa: pessoa,
+    local: local,
     data: agora.toLocaleDateString('pt-BR'),
     hora: agora.toLocaleTimeString('pt-BR')
   });
@@ -319,6 +326,7 @@ function retornarItem() {
   retornoNome.value = "";
   retornoQtd.value = "";
   retornoPessoa.value = "";
+  retornoLocal.value = "";
 }
 
 // 4° ABA - GESTÃO DE ESTOQUE

@@ -1,4 +1,4 @@
-﻿const entradaNome = document.getElementById('entradaNome');
+const entradaNome = document.getElementById('entradaNome');
 const entradaQtd = document.getElementById('entradaQtd');
 const entradaPessoa = document.getElementById('entradaPessoa');
 const entradaLocal = document.getElementById('entradaLocal');
@@ -20,9 +20,18 @@ const msgRetorno = document.getElementById('msgRetorno');
 const msgHistorico = document.getElementById('msgHistorico');
 const msgEstoque = document.getElementById('msgEstoque');
 
-const HISTORICO_SENHA = 'admin';
+const HISTORICO_SENHA_HASH = 'd404559f602eab6fd602ac7680dacbfaadd13630335e951f097af3900e9de176';
 
-// Função segura para acessar localStorage
+function hashSenha(senha) {
+  let hash = 0;
+  for (let i = 0; i < senha.length; i++) {
+    const char = senha.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; 
+  }
+  return Math.abs(hash).toString(16);
+}
+
 function getLocalStorage(key, defaultValue) {
   try {
     const item = localStorage.getItem(key);
@@ -43,13 +52,13 @@ function setLocalStorage(key, value) {
 
 let estoque = getLocalStorage('estoque', {
   "Caneta Azul": 50,
-  "Lápis HB": 100,
+  "L�pis HB": 100,
   "Borracha Branca": 45
 });
 
 let historico = getLocalStorage('historico', []);
 
-// Limpeza de dados antigos/corrompidos (sanitização)
+
 historico = historico.map(mov => {
   if (mov.data && mov.data.includes('T') && mov.data.includes('Z')) {
     const d = new Date(mov.data);
@@ -58,16 +67,15 @@ historico = historico.map(mov => {
   }
   return {
     tipo: mov.tipo || "Desconhecido",
-    item: mov.item || "Produto não identificado",
+    item: mov.item || "Produto n�o identificado",
     quantidade: mov.quantidade || 0,
-    pessoa: mov.pessoa || "Não informado",
+    pessoa: mov.pessoa || "N�o informado",
     local: mov.local || "",
-    data: mov.data || "Data indisponível",
+    data: mov.data || "Data indispon�vel",
     hora: mov.hora || ""
   };
 }).filter(mov => {
-  // Remove entradas completamente inválidas
-  const isInvalid = mov.item === "Produto não identificado" && mov.pessoa === "Não informado";
+  const isInvalid = mov.item === "Produto n�o identificado" && mov.pessoa === "N�o informado";
   return !isInvalid;
 });
 setLocalStorage('historico', historico);
@@ -76,7 +84,6 @@ let paginaAtual = 1;
 let paginaEstoqueAtual = 1;
 const itensPorPagina = 5;
 
-// Lógica de Abas
 function openTab(evt, tabName) {
   const tabContents = document.getElementsByClassName("tab-content");
   for (let i = 0; i < tabContents.length; i++) {
@@ -91,7 +98,6 @@ function openTab(evt, tabName) {
   document.getElementById(tabName).classList.add("active");
   evt.currentTarget.classList.add("active");
 
-  // Atualiza visualização conforme a aba
   if (tabName === 'tab-estoque') {
     atualizarTabela();
   }
@@ -99,13 +105,11 @@ function openTab(evt, tabName) {
     atualizarHistorico();
   }
   
-  // Reset filtro de busca do estoque ao trocar de aba
   if (tabName === 'tab-estoque') {
     pesquisa.value = '';
   }
 }
 
-// Controle do Modal de Senha
 let senhaCallback = null;
 
 function abrirModalSenha(mensagem, callback) {
@@ -124,7 +128,9 @@ function fecharModalSenha() {
 
 function confirmarSenha() {
   const senha = document.getElementById('senhaInput').value;
-  if (senha === HISTORICO_SENHA) {
+  const senhaValida = senha === 'admin';
+  
+  if (senhaValida) {
     if (senhaCallback) {
       senhaCallback(true);
     }
@@ -158,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function mostrarMensagem(elemento, texto, tipo) {
-  if (!elemento) return; // Proteção contra elemento nulo
+  if (!elemento) return;
   elemento.textContent = texto;
   elemento.className = `msg-container msg-${tipo}`;
   elemento.style.display = 'block';
@@ -170,17 +176,16 @@ function mostrarMensagem(elemento, texto, tipo) {
 
 function validarSenhaHistorico() {
   if (!msgHistorico) return null;
-  // Esta função será chamada via callback
   return null;
 }
 
 function limparHistorico() {
-  abrirModalSenha('Digite a senha para apagar o histórico:', (valido) => {
+  abrirModalSenha('Digite a senha para apagar o hist�rico:', (valido) => {
     if (valido) {
       historico = [];
       salvarDados();
       atualizarHistorico();
-      mostrarMensagem(msgHistorico, 'Histórico apagado com sucesso.', 'success');
+      mostrarMensagem(msgHistorico, 'Hist�rico apagado com sucesso.', 'success');
     }
   });
 }
@@ -203,12 +208,11 @@ function excluirHistorico(realIndex) {
       historico.splice(realIndex, 1);
       salvarDados();
       atualizarHistorico();
-      mostrarMensagem(msgHistorico, 'Registro removido do histórico.', 'success');
+      mostrarMensagem(msgHistorico, 'Registro removido do hist�rico.', 'success');
     }
   });
 }
 
-// 1° ABA - ADICIONAR ITEM (ENTRADA)
 function adicionarItem() {
   const nome = entradaNome.value.trim();
   const qtd = Number(entradaQtd.value);
@@ -216,7 +220,7 @@ function adicionarItem() {
   const local = entradaLocal.value.trim();
 
   if (!nome || nome.length > 100 || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
-    return mostrarMensagem(msgEntrada, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
+    return mostrarMensagem(msgEntrada, "Preencha todos os campos com valores v�lidos (m�x 100 caracteres)!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
@@ -242,7 +246,6 @@ function adicionarItem() {
   mostrarMensagem(msgEntrada, "Entrada registrada com sucesso!", "success");
 }
 
-// 2° ABA - REMOVER ITEM (SAÍDA)
 function removerItem() {
   const nome = saidaNome.value;
   const qtd = Number(saidaQtd.value);
@@ -250,7 +253,7 @@ function removerItem() {
   const local = saidaLocal.value.trim();
 
   if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
-    return mostrarMensagem(msgSaida, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
+    return mostrarMensagem(msgSaida, "Preencha todos os campos com valores v�lidos (m�x 100 caracteres)!", "error");
   }
 
   if (!estoque[nome] || estoque[nome] < qtd) {
@@ -258,11 +261,10 @@ function removerItem() {
   }
 
   estoque[nome] -= qtd;
-  // Não deletamos a chave para que o item continue aparecendo no "Retorno"
 
   const agora = new Date();
   historico.push({
-    tipo: "Saída",
+    tipo: "Sa�da",
     item: nome,
     quantidade: qtd,
     pessoa: pessoa,
@@ -272,7 +274,7 @@ function removerItem() {
   });
 
   salvarDados();
-  mostrarMensagem(msgSaida, "Saída registrada!", "success");
+  mostrarMensagem(msgSaida, "Sa�da registrada!", "success");
   
   atualizarTabela();
   atualizarSelects();
@@ -285,7 +287,6 @@ function removerItem() {
   qtdDisponivel.innerHTML = "";
 }
 
-// 3° ABA - RETORNAR ITEM (RETORNO)
 function retornarItem() {
   const nome = retornoNome.value;
   const qtd = Number(retornoQtd.value);
@@ -293,7 +294,7 @@ function retornarItem() {
   const local = retornoLocal.value.trim();
 
   if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
-    return mostrarMensagem(msgRetorno, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
+    return mostrarMensagem(msgRetorno, "Preencha todos os campos com valores v�lidos (m�x 100 caracteres)!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
@@ -321,7 +322,6 @@ function retornarItem() {
   retornoLocal.value = "";
 }
 
-// 4° ABA - GESTÃO DE ESTOQUE
 function atualizarTabela(filtro = "") {
   tabelaEstoque.innerHTML = "";
   const filtroLower = filtro.toLowerCase();
@@ -360,7 +360,7 @@ function atualizarTabela(filtro = "") {
     `;
   });
 
-  document.getElementById("paginaIndicadorEstoque").innerText = `Página ${paginaEstoqueAtual} de ${totalPaginas}`;
+  document.getElementById("paginaIndicadorEstoque").innerText = `P�gina ${paginaEstoqueAtual} de ${totalPaginas}`;
   document.getElementById("btnAnteriorEstoque").disabled = (paginaEstoqueAtual === 1);
   document.getElementById("btnProximaEstoque").disabled = (paginaEstoqueAtual >= totalPaginas);
 }
@@ -395,7 +395,7 @@ function atualizarHistorico() {
   const containerPaginacao = document.getElementById("paginacaoHistorico");
 
   if (historico.length === 0) {
-    tabelaHistorico.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Sem histórico de movimentações</td></tr>';
+    tabelaHistorico.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Sem hist�rico de movimenta��es</td></tr>';
     if (containerPaginacao) containerPaginacao.style.display = 'none';
     return;
   }
@@ -409,11 +409,9 @@ function atualizarHistorico() {
   const inicio = (paginaAtual - 1) * itensPorPagina;
   const fim = inicio + itensPorPagina;
 
-  // Criar cópia do histórico original com o índice real preservado para a exclusão
   const historicoComIndices = historico.map((item, index) => ({ ...item, realIndex: index }));
   const historicoOrdenado = [...historicoComIndices].reverse();
   
-  // Recalcular realIndex para corresponder à posição correta após a reversão
   historicoOrdenado.forEach((item, i) => {
     item.realIndex = historico.length - 1 - i;
   });
@@ -425,10 +423,9 @@ function atualizarHistorico() {
     let classeTipo = "historico-type-entrada";
     
     if (tipo === "entrada") classeTipo = "historico-type-entrada";
-    else if (tipo === "saída" || tipo === "saida") classeTipo = "historico-type-saida";
+    else if (tipo === "sa�da" || tipo === "saida") classeTipo = "historico-type-saida";
     else if (tipo === "retorno") classeTipo = "historico-type-retorno";
 
-    // Capitaliza corretamente o tipo
     const tipoFormatado = mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1).toLowerCase();
     const localExibicao = (mov.local || '-').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     const itemHtml = (mov.item || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -451,7 +448,7 @@ function atualizarHistorico() {
     `;
   });
 
-  document.getElementById('paginaIndicador').textContent = `Página ${paginaAtual} de ${totalPaginas}`;
+  document.getElementById('paginaIndicador').textContent = `P�gina ${paginaAtual} de ${totalPaginas}`;
   document.getElementById('btnAnterior').disabled = paginaAtual === 1;
   document.getElementById('btnProxima').disabled = (paginaAtual >= totalPaginas);
 }
@@ -482,7 +479,7 @@ function atualizarSelects() {
   const itens = Object.keys(estoque).sort();
   
   itens.forEach(item => {
-    // Na saída, mostramos apenas se tiver quantidade
+    
     if (estoque[item] > 0) {
       const optSaida = document.createElement("option");
       optSaida.value = item;
@@ -490,7 +487,7 @@ function atualizarSelects() {
       saidaNome.appendChild(optSaida);
     }
 
-    // No retorno, mostramos todos que já existiram
+    
     const optRetorno = document.createElement("option");
     optRetorno.value = item;
     optRetorno.textContent = item;
@@ -504,13 +501,12 @@ function atualizarSelects() {
 function atualizarQtdDisponivelSaida() {
   const item = saidaNome.value;
   if (item && estoque[item]) {
-    qtdDisponivel.innerHTML = `Disponível em estoque: ${estoque[item]}`;
+    qtdDisponivel.innerHTML = `Dispon�vel em estoque: ${estoque[item]}`;
   } else {
     qtdDisponivel.innerHTML = "";
   }
 }
 
-// Variável para armazenar o item a deletar
 let itemParaDeletar = null;
 
 function deletarItemEstoque(nomeItem) {
@@ -526,7 +522,6 @@ function deletarItemEstoque(nomeItem) {
   });
 }
 
-// Fechar modal ao clicar fora
 document.addEventListener('click', (e) => {
   const modalSenha = document.getElementById('modalSenha');
   if (!modalSenha) return;
@@ -535,4 +530,5 @@ document.addEventListener('click', (e) => {
     fecharModalSenha();
   }
 }, true);
+
 

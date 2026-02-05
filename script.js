@@ -516,51 +516,29 @@ function atualizarQtdDisponivelSaida() {
   }
 }
 
-// Controle do Modal de Edição de Item do Estoque
-let itemEmEdicao = null;
+// Variável para armazenar o item a deletar
+let itemParaDeletar = null;
 
-function abrirModalEditarItem(nomeItem) {
-  itemEmEdicao = nomeItem;
-  document.getElementById('modalEditarTitle').textContent = 'Editar Item: ' + nomeItem;
-  document.getElementById('modalEditarItemName').textContent = nomeItem;
-  document.getElementById('modalEditarQtdAtual').textContent = estoque[nomeItem];
-  document.getElementById('modalEditarQtd').value = '';
-  document.getElementById('modalEditarQtd').focus();
-  document.getElementById('modalEditarItem').classList.add('active');
-}
-
-function fecharModalEditarItem() {
-  document.getElementById('modalEditarItem').classList.remove('active');
-  itemEmEdicao = null;
-  document.getElementById('modalEditarQtd').value = '';
-}
-
-
-
-function deletarItemEstoque() {
-  if (!itemEmEdicao) return;
-  
+function deletarItemEstoque(nomeItem) {
   abrirModalSenha('Digite a senha para deletar este item:', (valido) => {
     if (valido) {
-      const nomeItem = itemEmEdicao;
       delete estoque[nomeItem];
       salvarDados();
       atualizarTabela();
       atualizarSelects();
       
       mostrarMensagem(msgEstoque, `"${nomeItem}" foi deletado do estoque`, 'success');
-      fecharModalEditarItem();
     }
   });
 }
 
 // Fechar modal ao clicar fora
 document.addEventListener('click', (e) => {
-  const modalEditar = document.getElementById('modalEditarItem');
-  if (!modalEditar) return;
-  const modalContent = modalEditar.querySelector('.modal-content');
-  if (e.target === modalEditar && modalContent && !modalContent.contains(e.target)) {
-    fecharModalEditarItem();
+  const modalSenha = document.getElementById('modalSenha');
+  if (!modalSenha) return;
+  const modalContent = modalSenha.querySelector('.modal-content');
+  if (e.target === modalSenha && modalContent && !modalContent.contains(e.target)) {
+    fecharModalSenha();
   }
 });
 

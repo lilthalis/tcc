@@ -4,6 +4,7 @@ const entradaPessoa = document.getElementById('entradaPessoa');
 const saidaNome = document.getElementById('saidaNome');
 const saidaQtd = document.getElementById('saidaQtd');
 const saidaPessoa = document.getElementById('saidaPessoa');
+const saidaLocal = document.getElementById('saidaLocal');
 const retornoNome = document.getElementById('retornoNome');
 const retornoQtd = document.getElementById('retornoQtd');
 const retornoPessoa = document.getElementById('retornoPessoa');
@@ -184,8 +185,9 @@ function removerItem() {
   const nome = saidaNome.value;
   const qtd = Number(saidaQtd.value);
   const pessoa = saidaPessoa.value.trim();
+  const local = saidaLocal.value.trim();
 
-  if (!nome || qtd <= 0 || !pessoa) {
+  if (!nome || qtd <= 0 || !pessoa || !local) {
     return mostrarMensagem(msgSaida, "Preencha todos os campos!", "error");
   }
 
@@ -202,6 +204,7 @@ function removerItem() {
     item: nome,
     quantidade: qtd,
     pessoa: pessoa,
+    local: local,
     data: agora.toLocaleDateString('pt-BR'),
     hora: agora.toLocaleTimeString('pt-BR')
   });
@@ -216,6 +219,7 @@ function removerItem() {
   saidaNome.value = "";
   saidaQtd.value = "";
   saidaPessoa.value = "";
+  saidaLocal.value = "";
   qtdDisponivel.innerHTML = "";
 }
 
@@ -350,13 +354,14 @@ function atualizarHistorico() {
 
     // Capitaliza corretamente o tipo
     const tipoFormatado = mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1).toLowerCase();
+    const localInfo = mov.local ? ` (${mov.local})` : '';
 
     tabelaHistorico.innerHTML += `
       <tr>
         <td style="${corTipo} font-weight: bold;">${tipoFormatado}</td>
         <td>${mov.item}</td>
         <td>${mov.quantidade}</td>
-        <td>${mov.pessoa}</td>
+        <td>${mov.pessoa}${localInfo}</td>
         <td>
           <div class="historico-date">
             <span style="font-size: 11px;">${mov.data} ${mov.hora}</span>

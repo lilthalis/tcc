@@ -411,6 +411,12 @@ function atualizarHistorico() {
   // Criar cópia do histórico original com o índice real preservado para a exclusão
   const historicoComIndices = historico.map((item, index) => ({ ...item, realIndex: index }));
   const historicoOrdenado = [...historicoComIndices].reverse();
+  
+  // Recalcular realIndex para corresponder à posição correta após a reversão
+  historicoOrdenado.forEach((item, i) => {
+    item.realIndex = historico.length - 1 - i;
+  });
+  
   const itensExibidos = historicoOrdenado.slice(inicio, fim);
 
   itensExibidos.forEach((mov) => {

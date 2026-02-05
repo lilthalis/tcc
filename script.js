@@ -14,6 +14,9 @@ const tabelaHistorico = document.getElementById('tabelaHistorico');
 const msgEntrada = document.getElementById('msgEntrada');
 const msgSaida = document.getElementById('msgSaida');
 const msgRetorno = document.getElementById('msgRetorno');
+const msgHistorico = document.getElementById('msgHistorico');
+
+const HISTORICO_SENHA = 'admin';
 
 // Função segura para acessar localStorage
 function getLocalStorage(key, defaultValue) {
@@ -111,6 +114,38 @@ function mostrarMensagem(elemento, texto, tipo) {
     elemento.style.display = 'none';
     elemento.textContent = '';
   }, 3000);
+}
+
+function validarSenhaHistorico() {
+  if (!msgHistorico) return null;
+  const senha = prompt('Digite a senha para apagar o histórico de movimentações:');
+  if (senha === null) return null;
+  if (senha !== HISTORICO_SENHA) {
+    mostrarMensagem(msgHistorico, 'Senha incorreta.', 'error');
+    return false;
+  }
+  return true;
+}
+
+function limparHistorico() {
+  const liberado = validarSenhaHistorico();
+  if (liberado !== true) return;
+
+  historico = [];
+  salvarDados();
+  atualizarHistorico();
+  mostrarMensagem(msgHistorico, 'Histórico apagado com sucesso.', 'success');
+}
+
+function excluirHistorico(realIndex) {
+  if (realIndex === undefined || realIndex === null) return;
+  const liberado = validarSenhaHistorico();
+  if (liberado !== true) return;
+
+  historico.splice(realIndex, 1);
+  salvarDados();
+  atualizarHistorico();
+  mostrarMensagem(msgHistorico, 'Registro removido do histórico.', 'success');
 }
 
 // 1° ABA - ADICIONAR ITEM (ENTRADA)
@@ -322,7 +357,12 @@ function atualizarHistorico() {
         <td>${mov.item}</td>
         <td>${mov.quantidade}</td>
         <td>${mov.pessoa}</td>
-        <td style="font-size: 11px;">${mov.data} ${mov.hora}</td>
+        <td>
+          <div class="historico-date">
+            <span style="font-size: 11px;">${mov.data} ${mov.hora}</span>
+            <button type="button" class="btn-historico-excluir" onclick="excluirHistorico(${mov.realIndex})">Excluir</button>
+          </div>
+        </td>
       </tr>
     `;
   });

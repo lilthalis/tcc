@@ -124,10 +124,10 @@ function fecharModalSenha() {
 function confirmarSenha() {
   const senha = document.getElementById('senhaInput').value;
   if (senha === HISTORICO_SENHA) {
-    fecharModalSenha();
     if (senhaCallback) {
       senhaCallback(true);
     }
+    fecharModalSenha();
   } else {
     const msg = document.getElementById('senhaInput');
     if (msg) {

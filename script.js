@@ -394,7 +394,7 @@ function atualizarHistorico() {
   const containerPaginacao = document.getElementById("paginacaoHistorico");
 
   if (historico.length === 0) {
-    tabelaHistorico.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999;">Sem histórico de movimentações</td></tr>';
+    tabelaHistorico.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Sem histórico de movimentações</td></tr>';
     if (containerPaginacao) containerPaginacao.style.display = 'none';
     return;
   }
@@ -423,14 +423,15 @@ function atualizarHistorico() {
 
     // Capitaliza corretamente o tipo
     const tipoFormatado = mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1).toLowerCase();
-    const localInfo = mov.local ? ` (${mov.local})` : '';
+    const localExibicao = mov.local || '-';
 
     tabelaHistorico.innerHTML += `
       <tr>
         <td class="${classeTipo}">${tipoFormatado}</td>
         <td>${mov.item}</td>
         <td style="text-align: center;">${mov.quantidade}</td>
-        <td class="historico-responsavel">${mov.pessoa}${localInfo}</td>
+        <td class="historico-responsavel">${mov.pessoa}</td>
+        <td style="font-size: 13px; color: #90caf9;">${localExibicao}</td>
         <td>
           <div class="historico-date">
             <span>${mov.data} ${mov.hora}</span>
@@ -563,14 +564,18 @@ function removerQuantidadeItem() {
 function deletarItemEstoque() {
   if (!itemEmEdicao) return;
   
-  const nomeItem = itemEmEdicao;
-  delete estoque[nomeItem];
-  salvarDados();
-  atualizarTabela();
-  atualizarSelects();
-  
-  mostrarMensagem(msgEstoque, `"${nomeItem}" foi deletado do estoque`, 'success');
-  fecharModalEditarItem();
+  abrirModalSenha('Digite a senha para deletar este item:', (valido) => {
+    if (valido) {
+      const nomeItem = itemEmEdicao;
+      delete estoque[nomeItem];
+      salvarDados();
+      atualizarTabela();
+      atualizarSelects();
+      
+      mostrarMensagem(msgEstoque, `"${nomeItem}" foi deletado do estoque`, 'success');
+      fecharModalEditarItem();
+    }
+  });
 }
 
 // Fechar modal ao clicar fora

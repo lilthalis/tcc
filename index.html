@@ -88,6 +88,10 @@
     <div id="tab-estoque" class="tab-content">
       <section class="section-estoque">
         <h2>Items em Estoque</h2>
+        <div class="estoque-actions">
+          <button class="btn-clear" onclick="limparEstoque()">Limpar estoque</button>
+          <div id="msgEstoque" class="msg-container"></div>
+        </div>
         <div class="search-bar">
           <input type="text" id="pesquisa" placeholder="🔍 Pesquisar no estoque..." onkeyup="filtrarEstoque()">
         </div>
@@ -97,6 +101,7 @@
               <tr>
                 <th>Item</th>
                 <th>Quantidade Atual</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody id="tabelaEstoque"></tbody>
@@ -138,6 +143,55 @@
           <button onclick="proximaPagina()" id="btnProxima">Próxima</button>
         </div>
       </section>
+    </div>
+  </div>
+
+  <!-- Modal de Senha -->
+  <div id="modalSenha" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Verificação de Segurança</h3>
+        <button class="modal-close" onclick="fecharModalSenha()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="modalMsg">Digite a senha para continuar</p>
+        <input type="password" id="senhaInput" placeholder="Digite a senha" onkeypress="if(event.key === 'Enter') confirmarSenha()">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" onclick="fecharModalSenha()">Cancelar</button>
+        <button class="btn-modal-confirm" onclick="confirmarSenha()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Edição de Item do Estoque -->
+  <div id="modalEditarItem" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalEditarTitle">Editar Item</h3>
+        <button class="modal-close" onclick="fecharModalEditarItem()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="modalEditarItemName" style="margin-bottom: 20px; color: #64b5f6; font-weight: 600;"></p>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          <div>
+            <label style="color: #90caf9; margin-bottom: 8px; display: block; font-weight: 500;">Quantidade atual:</label>
+            <p id="modalEditarQtdAtual" style="color: #e0e0e0; font-weight: 600; margin: 0;">0</p>
+          </div>
+          <div>
+            <label for="modalEditarQtd" style="color: #90caf9; margin-bottom: 8px; display: block; font-weight: 500;">Quantidade a adicionar/remover:</label>
+            <input type="number" id="modalEditarQtd" placeholder="Quantidade" min="1" style="width: 100%; padding: 10px; border: 1px solid #2d5a8c; border-radius: 8px; background: #0d1b2a; color: #e0e0e0; font-size: 14px; box-sizing: border-box;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button class="btn-modal-danger" onclick="deletarItemEstoque()">Deletar Item</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-modal-cancel" onclick="fecharModalEditarItem()">Cancelar</button>
+          <button class="btn-modal-info" onclick="adicionarQuantidadeItem()">+ Adicionar</button>
+          <button class="btn-modal-warn" onclick="removerQuantidadeItem()">- Retirar</button>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -92,15 +92,38 @@ section h2 {
 
 .historico-actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
   flex-wrap: wrap;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid #2d5a8c;
+}
+
+.estoque-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid #2d5a8c;
 }
 
 .btn-clear {
-  background: linear-gradient(135deg, #c62828, #8e0000);
+  background: linear-gradient(135deg, #c62828 0%, #8e0000 100%);
   border: 1px solid #b71c1c;
+  padding: 10px 16px;
+  font-size: 14px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-clear:hover {
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+  box-shadow: 0 4px 8px rgba(198, 40, 40, 0.3);
 }
 
 .form-group {
@@ -188,13 +211,20 @@ button:hover {
   margin-bottom: 20px;
 }
 
+.table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #2d5a8c;
+  background: #0d1b2a;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
 th, td {
-  padding: 15px;
+  padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #2d5a8c;
   color: #e0e0e0;
@@ -202,52 +232,322 @@ th, td {
 
 th {
   background-color: #0d1b2a;
-  font-weight: 600;
+  font-weight: 700;
   color: #64b5f6;
+  border-bottom: 2px solid #64b5f6;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
 }
 
 tr:hover {
   background-color: #1e3a5f;
+  transition: background-color 0.2s;
 }
 
-/* Botão de excluir no histórico */
-#tabelaHistorico button {
-  padding: 5px 10px;
-  background: #2d5a8c;
+tbody tr {
+  border-left: 3px solid transparent;
+}
+
+tbody tr:hover {
+  border-left-color: #64b5f6;
+}
+
+#tabelaHistorico td:first-child {
+  font-weight: 700;
+  min-width: 80px;
+}
+
+#tabelaHistorico td:nth-child(2) {
+  font-weight: 500;
+}
+
+#tabelaHistorico td:nth-child(3) {
+  text-align: center;
+  min-width: 50px;
+}
+
+.historico-type-entrada {
+  color: #81c784;
+}
+
+.historico-type-saida {
+  color: #ef5350;
+}
+
+.historico-type-retorno {
+  color: #ffb74d;
+}
+
+.historico-responsavel {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Modal de Senha */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #1a2f42;
+  border: 1px solid #2d5a8c;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  width: 85%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%);
+  padding: 20px;
+  border-bottom: 1px solid #2d5a8c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
   color: #64b5f6;
-  font-size: 11px;
-  border: 1px solid #42a5f5;
-  border-radius: 4px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: #64b5f6;
+  font-size: 28px;
   cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s;
 }
 
-#tabelaHistorico button:hover {
+.modal-close:hover {
+  color: #90caf9;
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-body p {
+  color: #90caf9;
+  margin: 0 0 15px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal-body input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #2d5a8c;
+  border-radius: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+  background: #0d1b2a;
+  color: #e0e0e0;
+  font-family: inherit;
+}
+
+.modal-body input:focus {
+  outline: none;
+  border-color: #64b5f6;
+  box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.2);
+}
+
+.modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 15px;
+  background: #0d1b2a;
+  border-top: 1px solid #2d5a8c;
+}
+
+.btn-modal-cancel,
+.btn-modal-confirm {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s;
+  flex: 1;
+  min-width: 80px;
+}
+
+.btn-modal-cancel {
+  background: #2d5a8c;
+  color: #90caf9;
+  border: 1px solid #2d5a8c;
+}
+
+.btn-modal-cancel:hover {
+  background: #1e3a5f;
+  border-color: #64b5f6;
+  color: #64b5f6;
+}
+
+.btn-modal-confirm {
   background: #42a5f5;
   color: white;
-  border-color: #42a5f5;
+  border: 1px solid #42a5f5;
+}
+
+.btn-modal-confirm:hover {
+  background: #64b5f6;
+  border-color: #64b5f6;
+}
+
+.btn-estoque-editar {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid #42a5f5;
+  background: transparent;
+  color: #42a5f5;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.btn-estoque-editar:hover {
+  background: #42a5f5;
+  color: white;
+  box-shadow: 0 2px 6px rgba(66, 165, 245, 0.3);
+}
+
+.btn-modal-info {
+  background: #42a5f5;
+  color: white;
+  border: 1px solid #42a5f5;
+  flex: 1;
+  min-width: 70px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.btn-modal-info:hover {
+  background: #64b5f6;
+  border-color: #64b5f6;
+}
+
+.btn-modal-warn {
+  background: #ffa726;
+  color: white;
+  border: 1px solid #ffa726;
+  flex: 1;
+  min-width: 70px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.btn-modal-warn:hover {
+  background: #ffb74d;
+  border-color: #ffb74d;
+}
+
+.btn-modal-danger {
+  background: transparent;
+  color: #ff8a80;
+  border: 1px solid #ff8a80;
+  padding: 8px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  min-width: 80px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.btn-modal-danger:hover {
+  background: #ff8a80;
+  color: #0d1b2a;
+  box-shadow: 0 2px 8px rgba(255, 138, 128, 0.3);
+}
+
+.modal-historico-date {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
 }
 
 .historico-date {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.historico-date span {
+  font-size: 12px;
+  color: #90caf9;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.3px;
 }
 
 .btn-historico-excluir {
-  padding: 4px 8px;
+  padding: 5px 10px;
   font-size: 11px;
+  font-weight: 600;
   border-radius: 4px;
-  border: 1px solid #ff8a80;
+  border: 1.5px solid #ff8a80;
   background: transparent;
   color: #ff8a80;
-  align-self: flex-end;
-  justify-self: flex-end;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .btn-historico-excluir:hover {
   background: #ff8a80;
-  color: #1a1920;
+  color: #0d1b2a;
+  box-shadow: 0 2px 8px rgba(255, 138, 128, 0.3);
 }
 
 .pagination {
@@ -255,25 +555,39 @@ tr:hover {
   justify-content: center;
   align-items: center;
   gap: 15px;
-  margin-top: 25px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #2d5a8c;
 }
 
 .pagination button {
-  padding: 8px 15px;
-  font-size: 14px;
+  padding: 8px 16px;
+  font-size: 13px;
   color: #90caf9;
   background: #1e3a5f;
   border: 1px solid #2d5a8c;
+  font-weight: 600;
+  transition: all 0.2s;
+  border-radius: 4px;
 }
 
 .pagination button:hover:not(:disabled) {
   border-color: #64b5f6;
   color: #64b5f6;
   background: #2d5a8c;
+  box-shadow: 0 2px 6px rgba(100, 181, 246, 0.2);
 }
 
 .pagination button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+}
+
+.pagination span {
+  color: #90caf9;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 100px;
+  text-align: center;
 }
 

@@ -16,6 +16,7 @@ const msgEntrada = document.getElementById('msgEntrada');
 const msgSaida = document.getElementById('msgSaida');
 const msgRetorno = document.getElementById('msgRetorno');
 const msgHistorico = document.getElementById('msgHistorico');
+const msgEstoque = document.getElementById('msgEstoque');
 
 const HISTORICO_SENHA = 'admin';
 
@@ -94,7 +95,62 @@ function openTab(evt, tabName) {
   if (tabName === 'tab-historico') {
     atualizarHistorico();
   }
+  
+  // Reset filtro de busca do estoque ao trocar de aba
+  if (tabName === 'tab-estoque') {
+    pesquisa.value = '';
+  }
 }
+
+// Controle do Modal de Senha
+let senhaCallback = null;
+
+function abrirModalSenha(mensagem, callback) {
+  senhaCallback = callback;
+  document.getElementById('modalMsg').textContent = mensagem;
+  document.getElementById('senhaInput').value = '';
+  document.getElementById('modalSenha').classList.add('active');
+  document.getElementById('senhaInput').focus();
+}
+
+function fecharModalSenha() {
+  document.getElementById('modalSenha').classList.remove('active');
+  document.getElementById('senhaInput').value = '';
+  senhaCallback = null;
+}
+
+function confirmarSenha() {
+  const senha = document.getElementById('senhaInput').value;
+  if (senha === HISTORICO_SENHA) {
+    fecharModalSenha();
+    if (senhaCallback) {
+      senhaCallback(true);
+    }
+  } else {
+    const msg = document.getElementById('senhaInput');
+    if (msg) {
+      msg.style.border = '2px solid #ff8a80';
+      msg.style.boxShadow = '0 0 0 3px rgba(255, 138, 128, 0.2)';
+      setTimeout(() => {
+        if (msg) {
+          msg.style.border = '1px solid #2d5a8c';
+          msg.style.boxShadow = 'none';
+        }
+      }, 1500);
+      msg.value = '';
+      msg.focus();
+    }
+  }
+}
+
+// Fechar modal ao clicar fora
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('modalSenha');
+  const modalContent = document.querySelector('.modal-content');
+  if (e.target === modal && modalContent && !modalContent.contains(e.target)) {
+    fecharModalSenha();
+  }
+}, true);
 
 function salvarDados() {
   setLocalStorage('estoque', estoque);
@@ -108,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function mostrarMensagem(elemento, texto, tipo) {
+  if (!elemento) return; // Proteção contra elemento nulo
   elemento.textContent = texto;
   elemento.className = `msg-container msg-${tipo}`;
   elemento.style.display = 'block';
@@ -119,34 +176,42 @@ function mostrarMensagem(elemento, texto, tipo) {
 
 function validarSenhaHistorico() {
   if (!msgHistorico) return null;
-  const senha = prompt('Digite a senha para apagar o histórico de movimentações:');
-  if (senha === null) return null;
-  if (senha !== HISTORICO_SENHA) {
-    mostrarMensagem(msgHistorico, 'Senha incorreta.', 'error');
-    return false;
-  }
-  return true;
+  // Esta função será chamada via callback
+  return null;
 }
 
 function limparHistorico() {
-  const liberado = validarSenhaHistorico();
-  if (liberado !== true) return;
+  abrirModalSenha('Digite a senha para apagar o histórico:', (valido) => {
+    if (valido) {
+      historico = [];
+      salvarDados();
+      atualizarHistorico();
+      mostrarMensagem(msgHistorico, 'Histórico apagado com sucesso.', 'success');
+    }
+  });
+}
 
-  historico = [];
-  salvarDados();
-  atualizarHistorico();
-  mostrarMensagem(msgHistorico, 'Histórico apagado com sucesso.', 'success');
+function limparEstoque() {
+  abrirModalSenha('Digite a senha para apagar o estoque:', (valido) => {
+    if (valido) {
+      estoque = {};
+      salvarDados();
+      atualizarTabela();
+      atualizarSelects();
+      mostrarMensagem(msgEstoque, 'Estoque apagado com sucesso.', 'success');
+    }
+  });
 }
 
 function excluirHistorico(realIndex) {
-  if (realIndex === undefined || realIndex === null) return;
-  const liberado = validarSenhaHistorico();
-  if (liberado !== true) return;
-
-  historico.splice(realIndex, 1);
-  salvarDados();
-  atualizarHistorico();
-  mostrarMensagem(msgHistorico, 'Registro removido do histórico.', 'success');
+  abrirModalSenha('Digite a senha para excluir este registro:', (valido) => {
+    if (valido) {
+      historico.splice(realIndex, 1);
+      salvarDados();
+      atualizarHistorico();
+      mostrarMensagem(msgHistorico, 'Registro removido do histórico.', 'success');
+    }
+  });
 }
 
 // 1° ABA - ADICIONAR ITEM (ENTRADA)
@@ -282,10 +347,14 @@ function atualizarTabela(filtro = "") {
   const itensPaginados = itensFiltrados.slice(inicio, fim);
 
   itensPaginados.forEach(item => {
+    const itemEscapado = item.replace(/'/g, "\\'").replace(/"/g, '&quot;');
     tabelaEstoque.innerHTML += `
       <tr>
         <td>${item}</td>
-        <td>${estoque[item]}</td>
+        <td style="text-align: center;">${estoque[item]}</td>
+        <td style="text-align: center;">
+          <button class="btn-estoque-editar" onclick="abrirModalEditarItem('${itemEscapado}')">Editar</button>
+        </td>
       </tr>
     `;
   });
@@ -345,12 +414,12 @@ function atualizarHistorico() {
   const itensExibidos = historicoOrdenado.slice(inicio, fim);
 
   itensExibidos.forEach((mov) => {
-    let corTipo = "color: #1a73e8;";
     const tipo = (mov.tipo || "Entrada").toLowerCase();
+    let classeTipo = "historico-type-entrada";
     
-    if (tipo === "entrada") corTipo = "color: #188038;";
-    else if (tipo === "saída" || tipo === "saida") corTipo = "color: #d93025;";
-    else if (tipo === "retorno") corTipo = "color: #f29900;";
+    if (tipo === "entrada") classeTipo = "historico-type-entrada";
+    else if (tipo === "saída" || tipo === "saida") classeTipo = "historico-type-saida";
+    else if (tipo === "retorno") classeTipo = "historico-type-retorno";
 
     // Capitaliza corretamente o tipo
     const tipoFormatado = mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1).toLowerCase();
@@ -358,13 +427,13 @@ function atualizarHistorico() {
 
     tabelaHistorico.innerHTML += `
       <tr>
-        <td style="${corTipo} font-weight: bold;">${tipoFormatado}</td>
+        <td class="${classeTipo}">${tipoFormatado}</td>
         <td>${mov.item}</td>
-        <td>${mov.quantidade}</td>
-        <td>${mov.pessoa}${localInfo}</td>
+        <td style="text-align: center;">${mov.quantidade}</td>
+        <td class="historico-responsavel">${mov.pessoa}${localInfo}</td>
         <td>
           <div class="historico-date">
-            <span style="font-size: 11px;">${mov.data} ${mov.hora}</span>
+            <span>${mov.data} ${mov.hora}</span>
             <button type="button" class="btn-historico-excluir" onclick="excluirHistorico(${mov.realIndex})">Excluir</button>
           </div>
         </td>
@@ -430,4 +499,87 @@ function atualizarQtdDisponivelSaida() {
     qtdDisponivel.innerHTML = "";
   }
 }
+
+// Controle do Modal de Edição de Item do Estoque
+let itemEmEdicao = null;
+
+function abrirModalEditarItem(nomeItem) {
+  itemEmEdicao = nomeItem;
+  document.getElementById('modalEditarTitle').textContent = 'Editar Item: ' + nomeItem;
+  document.getElementById('modalEditarItemName').textContent = nomeItem;
+  document.getElementById('modalEditarQtdAtual').textContent = estoque[nomeItem];
+  document.getElementById('modalEditarQtd').value = '';
+  document.getElementById('modalEditarQtd').focus();
+  document.getElementById('modalEditarItem').classList.add('active');
+}
+
+function fecharModalEditarItem() {
+  document.getElementById('modalEditarItem').classList.remove('active');
+  itemEmEdicao = null;
+  document.getElementById('modalEditarQtd').value = '';
+}
+
+function adicionarQuantidadeItem() {
+  if (!itemEmEdicao) return;
+  const qtd = Number(document.getElementById('modalEditarQtd').value);
+  
+  if (!qtd || qtd <= 0 || !Number.isInteger(qtd)) {
+    mostrarMensagem(msgEstoque, 'Digite uma quantidade válida (número inteiro)', 'error');
+    return;
+  }
+  
+  estoque[itemEmEdicao] += qtd;
+  salvarDados();
+  atualizarTabela();
+  atualizarSelects();
+  
+  mostrarMensagem(msgEstoque, `${qtd} adicionado(s) a "${itemEmEdicao}"`, 'success');
+  fecharModalEditarItem();
+}
+
+function removerQuantidadeItem() {
+  if (!itemEmEdicao) return;
+  const qtd = Number(document.getElementById('modalEditarQtd').value);
+  
+  if (!qtd || qtd <= 0 || !Number.isInteger(qtd)) {
+    mostrarMensagem(msgEstoque, 'Digite uma quantidade válida (número inteiro)', 'error');
+    return;
+  }
+  
+  if (estoque[itemEmEdicao] < qtd) {
+    mostrarMensagem(msgEstoque, 'Quantidade insuficiente no estoque', 'error');
+    return;
+  }
+  
+  estoque[itemEmEdicao] -= qtd;
+  salvarDados();
+  atualizarTabela();
+  atualizarSelects();
+  
+  mostrarMensagem(msgEstoque, `${qtd} removido(s) de "${itemEmEdicao}"`, 'success');
+  fecharModalEditarItem();
+}
+
+function deletarItemEstoque() {
+  if (!itemEmEdicao) return;
+  
+  const nomeItem = itemEmEdicao;
+  delete estoque[nomeItem];
+  salvarDados();
+  atualizarTabela();
+  atualizarSelects();
+  
+  mostrarMensagem(msgEstoque, `"${nomeItem}" foi deletado do estoque`, 'success');
+  fecharModalEditarItem();
+}
+
+// Fechar modal ao clicar fora
+document.addEventListener('click', (e) => {
+  const modalEditar = document.getElementById('modalEditarItem');
+  if (!modalEditar) return;
+  const modalContent = modalEditar.querySelector('.modal-content');
+  if (e.target === modalEditar && modalContent && !modalContent.contains(e.target)) {
+    fecharModalEditarItem();
+  }
+});
 

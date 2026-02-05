@@ -1,4 +1,4 @@
-const entradaNome = document.getElementById('entradaNome');
+ï»¿const entradaNome = document.getElementById('entradaNome');
 const entradaQtd = document.getElementById('entradaQtd');
 const entradaPessoa = document.getElementById('entradaPessoa');
 const entradaLocal = document.getElementById('entradaLocal');
@@ -52,7 +52,7 @@ function setLocalStorage(key, value) {
 
 let estoque = getLocalStorage('estoque', {
   "Caneta Azul": 50,
-  "Lápis HB": 100,
+  "Lï¿½pis HB": 100,
   "Borracha Branca": 45
 });
 
@@ -67,15 +67,15 @@ historico = historico.map(mov => {
   }
   return {
     tipo: mov.tipo || "Desconhecido",
-    item: mov.item || "Produto não identificado",
+    item: mov.item || "Produto nï¿½o identificado",
     quantidade: mov.quantidade || 0,
-    pessoa: mov.pessoa || "Não informado",
+    pessoa: mov.pessoa || "Nï¿½o informado",
     local: mov.local || "",
-    data: mov.data || "Data indisponível",
+    data: mov.data || "Data indisponï¿½vel",
     hora: mov.hora || ""
   };
 }).filter(mov => {
-  const isInvalid = mov.item === "Produto não identificado" && mov.pessoa === "Não informado";
+  const isInvalid = mov.item === "Produto nï¿½o identificado" && mov.pessoa === "Nï¿½o informado";
   return !isInvalid;
 });
 setLocalStorage('historico', historico);
@@ -180,12 +180,12 @@ function validarSenhaHistorico() {
 }
 
 function limparHistorico() {
-  abrirModalSenha('Digite a senha para apagar o histórico:', (valido) => {
+  abrirModalSenha('Digite a senha para apagar o histï¿½rico:', (valido) => {
     if (valido) {
       historico = [];
       salvarDados();
       atualizarHistorico();
-      mostrarMensagem(msgHistorico, 'Histórico apagado com sucesso.', 'success');
+      mostrarMensagem(msgHistorico, 'Histï¿½rico apagado com sucesso.', 'success');
     }
   });
 }
@@ -208,7 +208,7 @@ function excluirHistorico(realIndex) {
       historico.splice(realIndex, 1);
       salvarDados();
       atualizarHistorico();
-      mostrarMensagem(msgHistorico, 'Registro removido do histórico.', 'success');
+      mostrarMensagem(msgHistorico, 'Registro removido do histï¿½rico.', 'success');
     }
   });
 }
@@ -220,7 +220,7 @@ function adicionarItem() {
   const local = entradaLocal.value.trim();
 
   if (!nome || nome.length > 100 || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
-    return mostrarMensagem(msgEntrada, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
+    return mostrarMensagem(msgEntrada, "Preencha todos os campos com valores vï¿½lidos (mï¿½x 100 caracteres)!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
@@ -253,7 +253,7 @@ function removerItem() {
   const local = saidaLocal.value.trim();
 
   if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
-    return mostrarMensagem(msgSaida, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
+    return mostrarMensagem(msgSaida, "Preencha todos os campos com valores vï¿½lidos (mï¿½x 100 caracteres)!", "error");
   }
 
   if (!estoque[nome] || estoque[nome] < qtd) {
@@ -264,7 +264,7 @@ function removerItem() {
 
   const agora = new Date();
   historico.push({
-    tipo: "Saída",
+    tipo: "Saï¿½da",
     item: nome,
     quantidade: qtd,
     pessoa: pessoa,
@@ -274,7 +274,7 @@ function removerItem() {
   });
 
   salvarDados();
-  mostrarMensagem(msgSaida, "Saída registrada!", "success");
+  mostrarMensagem(msgSaida, "Saï¿½da registrada!", "success");
   
   atualizarTabela();
   atualizarSelects();
@@ -294,7 +294,7 @@ function retornarItem() {
   const local = retornoLocal.value.trim();
 
   if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
-    return mostrarMensagem(msgRetorno, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
+    return mostrarMensagem(msgRetorno, "Preencha todos os campos com valores vï¿½lidos (mï¿½x 100 caracteres)!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
@@ -360,7 +360,7 @@ function atualizarTabela(filtro = "") {
     `;
   });
 
-  document.getElementById("paginaIndicadorEstoque").innerText = `Página ${paginaEstoqueAtual} de ${totalPaginas}`;
+  document.getElementById("paginaIndicadorEstoque").innerText = `Pï¿½gina ${paginaEstoqueAtual} de ${totalPaginas}`;
   document.getElementById("btnAnteriorEstoque").disabled = (paginaEstoqueAtual === 1);
   document.getElementById("btnProximaEstoque").disabled = (paginaEstoqueAtual >= totalPaginas);
 }
@@ -395,7 +395,7 @@ function atualizarHistorico() {
   const containerPaginacao = document.getElementById("paginacaoHistorico");
 
   if (historico.length === 0) {
-    tabelaHistorico.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Sem histórico de movimentações</td></tr>';
+    tabelaHistorico.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Sem histï¿½rico de movimentaï¿½ï¿½es</td></tr>';
     if (containerPaginacao) containerPaginacao.style.display = 'none';
     return;
   }
@@ -423,7 +423,7 @@ function atualizarHistorico() {
     let classeTipo = "historico-type-entrada";
     
     if (tipo === "entrada") classeTipo = "historico-type-entrada";
-    else if (tipo === "saída" || tipo === "saida") classeTipo = "historico-type-saida";
+    else if (tipo === "saï¿½da" || tipo === "saida") classeTipo = "historico-type-saida";
     else if (tipo === "retorno") classeTipo = "historico-type-retorno";
 
     const tipoFormatado = mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1).toLowerCase();
@@ -448,7 +448,7 @@ function atualizarHistorico() {
     `;
   });
 
-  document.getElementById('paginaIndicador').textContent = `Página ${paginaAtual} de ${totalPaginas}`;
+  document.getElementById('paginaIndicador').textContent = `Pï¿½gina ${paginaAtual} de ${totalPaginas}`;
   document.getElementById('btnAnterior').disabled = paginaAtual === 1;
   document.getElementById('btnProxima').disabled = (paginaAtual >= totalPaginas);
 }
@@ -501,7 +501,7 @@ function atualizarSelects() {
 function atualizarQtdDisponivelSaida() {
   const item = saidaNome.value;
   if (item && estoque[item]) {
-    qtdDisponivel.innerHTML = `Disponível em estoque: ${estoque[item]}`;
+    qtdDisponivel.innerHTML = `Disponï¿½vel em estoque: ${estoque[item]}`;
   } else {
     qtdDisponivel.innerHTML = "";
   }

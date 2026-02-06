@@ -614,4 +614,9 @@ tbody tr:hover {
   min-width: 100px;
   text-align: center;
 }
-
+.logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 80px;
+}

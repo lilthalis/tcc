@@ -274,7 +274,7 @@ function removerItem() {
   });
 
   salvarDados();
-  mostrarMensagem(msgSaida, "Sa�da registrada!", "success");
+  mostrarMensagem(msgSaida, "Saída registrada!", "success");
   
   atualizarTabela();
   atualizarSelects();
@@ -395,7 +395,7 @@ function atualizarHistorico() {
   const containerPaginacao = document.getElementById("paginacaoHistorico");
 
   if (historico.length === 0) {
-    tabelaHistorico.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Sem hist�rico de movimenta��es</td></tr>';
+    tabelaHistorico.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Sem histórico de movimentações</td></tr>';
     if (containerPaginacao) containerPaginacao.style.display = 'none';
     return;
   }
@@ -448,7 +448,7 @@ function atualizarHistorico() {
     `;
   });
 
-  document.getElementById('paginaIndicador').textContent = `P�gina ${paginaAtual} de ${totalPaginas}`;
+  document.getElementById('paginaIndicador').textContent = `Página ${paginaAtual} de ${totalPaginas}`;
   document.getElementById('btnAnterior').disabled = paginaAtual === 1;
   document.getElementById('btnProxima').disabled = (paginaAtual >= totalPaginas);
 }
@@ -501,7 +501,7 @@ function atualizarSelects() {
 function atualizarQtdDisponivelSaida() {
   const item = saidaNome.value;
   if (item && estoque[item]) {
-    qtdDisponivel.innerHTML = `Dispon�vel em estoque: ${estoque[item]}`;
+    qtdDisponivel.innerHTML = `Disponível em estoque: ${estoque[item]}`;
   } else {
     qtdDisponivel.innerHTML = "";
   }

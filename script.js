@@ -52,7 +52,7 @@ function setLocalStorage(key, value) {
 
 let estoque = getLocalStorage('estoque', {
   "Caneta Azul": 50,
-  "L�pis HB": 100,
+  "Lápis HB": 100,
   "Borracha Branca": 45
 });
 
@@ -67,15 +67,15 @@ historico = historico.map(mov => {
   }
   return {
     tipo: mov.tipo || "Desconhecido",
-    item: mov.item || "Produto n�o identificado",
+    item: mov.item || "Produto não identificado",
     quantidade: mov.quantidade || 0,
-    pessoa: mov.pessoa || "N�o informado",
+    pessoa: mov.pessoa || "Não informado",
     local: mov.local || "",
-    data: mov.data || "Data indispon�vel",
+    data: mov.data || "Data indisponível",
     hora: mov.hora || ""
   };
 }).filter(mov => {
-  const isInvalid = mov.item === "Produto n�o identificado" && mov.pessoa === "N�o informado";
+  const isInvalid = mov.item === "Produto não identificado" && mov.pessoa === "Não informado";
   return !isInvalid;
 });
 setLocalStorage('historico', historico);
@@ -180,12 +180,12 @@ function validarSenhaHistorico() {
 }
 
 function limparHistorico() {
-  abrirModalSenha('Digite a senha para apagar o hist�rico:', (valido) => {
+  abrirModalSenha('Digite a senha para apagar o histórico:', (valido) => {
     if (valido) {
       historico = [];
       salvarDados();
       atualizarHistorico();
-      mostrarMensagem(msgHistorico, 'Hist�rico apagado com sucesso.', 'success');
+      mostrarMensagem(msgHistorico, 'Histórico apagado com sucesso.', 'success');
     }
   });
 }
@@ -208,7 +208,7 @@ function excluirHistorico(realIndex) {
       historico.splice(realIndex, 1);
       salvarDados();
       atualizarHistorico();
-      mostrarMensagem(msgHistorico, 'Registro removido do hist�rico.', 'success');
+      mostrarMensagem(msgHistorico, 'Registro removido do histórico.', 'success');
     }
   });
 }
@@ -220,7 +220,7 @@ function adicionarItem() {
   const local = entradaLocal.value.trim();
 
   if (!nome || nome.length > 100 || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
-    return mostrarMensagem(msgEntrada, "Preencha todos os campos com valores v�lidos (m�x 100 caracteres)!", "error");
+    return mostrarMensagem(msgEntrada, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
@@ -253,7 +253,7 @@ function removerItem() {
   const local = saidaLocal.value.trim();
 
   if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
-    return mostrarMensagem(msgSaida, "Preencha todos os campos com valores v�lidos (m�x 100 caracteres)!", "error");
+    return mostrarMensagem(msgSaida, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
   }
 
   if (!estoque[nome] || estoque[nome] < qtd) {
@@ -264,7 +264,7 @@ function removerItem() {
 
   const agora = new Date();
   historico.push({
-    tipo: "Sa�da",
+    tipo: "Saída",
     item: nome,
     quantidade: qtd,
     pessoa: pessoa,
@@ -294,7 +294,7 @@ function retornarItem() {
   const local = retornoLocal.value.trim();
 
   if (!nome || qtd <= 0 || !Number.isInteger(qtd) || !pessoa || pessoa.length > 100 || !local || local.length > 100) {
-    return mostrarMensagem(msgRetorno, "Preencha todos os campos com valores v�lidos (m�x 100 caracteres)!", "error");
+    return mostrarMensagem(msgRetorno, "Preencha todos os campos com valores válidos (máx 100 caracteres)!", "error");
   }
 
   estoque[nome] = (estoque[nome] || 0) + qtd;
@@ -360,7 +360,7 @@ function atualizarTabela(filtro = "") {
     `;
   });
 
-  document.getElementById("paginaIndicadorEstoque").innerText = `P�gina ${paginaEstoqueAtual} de ${totalPaginas}`;
+  document.getElementById("paginaIndicadorEstoque").innerText = `Página ${paginaEstoqueAtual} de ${totalPaginas}`;
   document.getElementById("btnAnteriorEstoque").disabled = (paginaEstoqueAtual === 1);
   document.getElementById("btnProximaEstoque").disabled = (paginaEstoqueAtual >= totalPaginas);
 }
@@ -423,7 +423,7 @@ function atualizarHistorico() {
     let classeTipo = "historico-type-entrada";
     
     if (tipo === "entrada") classeTipo = "historico-type-entrada";
-    else if (tipo === "sa�da" || tipo === "saida") classeTipo = "historico-type-saida";
+    else if (tipo === "saída" || tipo === "saida") classeTipo = "historico-type-saida";
     else if (tipo === "retorno") classeTipo = "historico-type-retorno";
 
     const tipoFormatado = mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1).toLowerCase();

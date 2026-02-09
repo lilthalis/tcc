@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestão de Almoxarifado</title>
+  <title>Gestao de Almoxarifado</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,18 +13,18 @@
     <img src="p.png" alt="Logo" class="logo">
   </div>
 
-  <h1>Gestão de Almoxarifado</h1>
+  <h1>Gestao de Almoxarifado</h1>
 
   <div class="tab-container">
     <div class="tabs">
-      <button class="tab-btn active" onclick="openTab(event, 'tab-entrada')">1° Entrada</button>
-      <button class="tab-btn" onclick="openTab(event, 'tab-saida')">2° Saída</button>
-      <button class="tab-btn" onclick="openTab(event, 'tab-retorno')">3° Retorno</button>
-      <button class="tab-btn" onclick="openTab(event, 'tab-estoque')">4° Estoque</button>
-      <button class="tab-btn" onclick="openTab(event, 'tab-historico')">5° Histórico</button>
+      <button class="tab-btn active" onclick="openTab(event, 'tab-entrada')">1. Entrada</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-saida')">2. Saida</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-retorno')">3. Retorno</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-estoque')">4. Estoque</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-historico')">5. Historico</button>
     </div>
 
-    <!-- 1° ABA PARA entrada -->
+    <!-- 1. ABA PARA entrada -->
     <div id="tab-entrada" class="tab-content active">
       <section class="section-entrada">
         <h2>Entrada de Produto Novo</h2>
@@ -33,7 +33,7 @@
           <input type="text" id="entradaNome" placeholder="Ex: Caneta Azul">
           <label for="entradaQtd">Quantidade</label>
           <input type="number" id="entradaQtd" placeholder="Quantidade" min="1" step="1">
-          <label for="entradaPessoa">Responsável pela entrada</label>
+          <label for="entradaPessoa">Responsavel pela entrada</label>
           <input type="text" id="entradaPessoa" placeholder="Seu nome">
           <label for="entradaLocal">Local de armazenamento</label>
           <input type="text" id="entradaLocal" placeholder="Ex: Estoque Central, Sala 01, etc.">
@@ -43,10 +43,10 @@
       </section>
     </div>
 
-    <!-- 2° aba para saída -->
+    <!-- 2. aba para saida -->
     <div id="tab-saida" class="tab-content">
       <section class="section-saida">
-        <h2>Saída de Item (Controle de Retirada)</h2>
+        <h2>Saida de Item (Controle de Retirada)</h2>
         <div class="form-group">
           <label for="saidaNome">Selecionar Item</label>
           <select id="saidaNome" onchange="atualizarQtdDisponivelSaida()">
@@ -57,24 +57,24 @@
           <label for="saidaQtd">Quantidade</label>
           <input type="number" id="saidaQtd" placeholder="Quantidade" min="1" step="1">
           
-          <label for="saidaPessoa">Quem está retirando?</label>
+          <label for="saidaPessoa">Quem esta retirando?</label>
           <input type="text" id="saidaPessoa" placeholder="Nome do colaborador">
           
           <label for="saidaLocal">Para qual local?</label>
           <input type="text" id="saidaLocal" placeholder="Ex: Sala 01, Departamento, etc.">
           
-          <button onclick="removerItem()" class="btn-saida">Confirmar Saída</button>
+          <button onclick="removerItem()" class="btn-saida">Confirmar Saida</button>
           <div id="msgSaida" class="msg-container"></div>
         </div>
       </section>
     </div>
 
-    <!-- 3° aba para retorna o item ao estoque -->
+    <!-- 3. aba para retorna o item ao estoque -->
     <div id="tab-retorno" class="tab-content">
       <section class="section-retorno">
         <h2>Retorno ao Estoque</h2>
         <div class="form-group">
-          <label for="retornoNome">Produto que está retornando</label>
+          <label for="retornoNome">Produto que esta retornando</label>
           <select id="retornoNome">
             <option value="">Selecione um item...</option>
           </select>
@@ -82,7 +82,7 @@
           <label for="retornoQtd">Quantidade</label>
           <input type="number" id="retornoQtd" placeholder="Quantidade" min="1" step="1">
           
-          <label for="retornoPessoa">Quem está devolvendo?</label>
+          <label for="retornoPessoa">Quem esta devolvendo?</label>
           <input type="text" id="retornoPessoa" placeholder="Nome do colaborador">
           
           <label for="retornoLocal">Local de retorno</label>
@@ -94,7 +94,7 @@
       </section>
     </div>
 
-    <!-- 4° ABA PARA SABER OQUE TEM EM ESTOQUE -->
+    <!-- 4. ABA PARA SABER OQUE TEM EM ESTOQUE -->
     <div id="tab-estoque" class="tab-content">
       <section class="section-estoque">
         <h2>Items em Estoque</h2>
@@ -111,7 +111,7 @@
               <tr>
                 <th>Item</th>
                 <th>Quantidade Atual</th>
-                <th>Ações</th>
+                <th>Acoes</th>
               </tr>
             </thead>
             <tbody id="tabelaEstoque"></tbody>
@@ -119,18 +119,18 @@
         </div>
         <div class="pagination" id="paginacaoEstoque">
           <button onclick="paginaAnteriorEstoque()" id="btnAnteriorEstoque">Anterior</button>
-          <span id="paginaIndicadorEstoque">Página 1</span>
-          <button onclick="proximaPaginaEstoque()" id="btnProximaEstoque">Próxima</button>
+          <span id="paginaIndicadorEstoque">Pagina 1</span>
+          <button onclick="proximaPaginaEstoque()" id="btnProximaEstoque">Proxima</button>
         </div>
       </section>
     </div>
 
-    <!-- 5° ABA PARA HISTÓRICO -->
+    <!-- 5. ABA PARA HISTORICO -->
     <div id="tab-historico" class="tab-content">
       <section class="section-historico">
-        <h2>Histórico de Movimentações</h2>
+        <h2>Historico de Movimentacoes</h2>
         <div class="historico-actions">
-          <button class="btn-clear" onclick="limparHistorico()">Limpar histórico</button>
+          <button class="btn-clear" onclick="limparHistorico()">Limpar historico</button>
           <div id="msgHistorico" class="msg-container"></div>
         </div>
         <div class="table-container">
@@ -140,7 +140,7 @@
                 <th>Tipo</th>
                 <th>Item</th>
                 <th>Qtd</th>
-                <th>Responsável</th>
+                <th>Responsavel</th>
                 <th>Local</th>
                 <th>Data/Hora</th>
               </tr>
@@ -150,8 +150,8 @@
         </div>
         <div class="pagination" id="paginacaoHistorico">
           <button onclick="paginaAnterior()" id="btnAnterior">Anterior</button>
-          <span id="paginaIndicador">Página 1</span>
-          <button onclick="proximaPagina()" id="btnProxima">Próxima</button>
+          <span id="paginaIndicador">Pagina 1</span>
+          <button onclick="proximaPagina()" id="btnProxima">Proxima</button>
         </div>
       </section>
     </div>
@@ -161,7 +161,7 @@
   <div id="modalSenha" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Verificação de Segurança</h3>
+        <h3>Verificacao de Seguranca</h3>
         <button class="modal-close" onclick="fecharModalSenha()">&times;</button>
       </div>
       <div class="modal-body">
